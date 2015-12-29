@@ -26,23 +26,23 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
 
 public class ConferenceDetailActivity extends InjectableActionBarActivity implements IConferenceDetailActivity {
 
 
-    @InjectView(R.id.txtConferenceName)
+    @Bind(R.id.txtConferenceName)
     TextView txtConferenceName;
 
-    @InjectView(R.id.conferenceImageView)
+    @Bind(R.id.conferenceImageView)
     ImageView imgConferenceImageView;
 
-    @InjectView(R.id.txtConferenceDate)
+    @Bind(R.id.txtConferenceDate)
     TextView txtConferenceDate;
 
-    @InjectView(R.id.txtConferenceFullDesc)
+    @Bind(R.id.txtConferenceFullDesc)
     TextView txtConferenceFullDesc;
 
     @Inject
@@ -57,7 +57,7 @@ public class ConferenceDetailActivity extends InjectableActionBarActivity implem
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conference_detail);
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         conferenceId = getIntent().getLongExtra("id", 0);
 

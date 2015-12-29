@@ -24,7 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import timber.log.Timber;
 
 public class ConferenceListActivity extends InjectableActionBarActivity implements IConferenceListActivity, ConferenceListAdapter.ConferenceOnClickListener {
@@ -32,7 +32,7 @@ public class ConferenceListActivity extends InjectableActionBarActivity implemen
     @Inject
     IConferenceListPresenter presenter;
 
-    @InjectView(R.id.confView)
+    @Bind(R.id.confView)
     RecyclerView mRecyclerView;
 
     private ConferenceListAdapter mAdapter;
@@ -46,7 +46,7 @@ public class ConferenceListActivity extends InjectableActionBarActivity implemen
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.actionbar_conf_list);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));

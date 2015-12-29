@@ -20,7 +20,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import timber.log.Timber;
 
 /**
@@ -31,22 +31,22 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Inject
     IConferenceSessionDetailPresenter presenter;
 
-    @InjectView(R.id.txtTitle)
+    @Bind(R.id.txtTitle)
     TextView title;
 
-    @InjectView(R.id.txtSchedule)
+    @Bind(R.id.txtSchedule)
     TextView schedule;
 
-    @InjectView(R.id.txtRoom)
+    @Bind(R.id.txtRoom)
     TextView room;
 
-    @InjectView(R.id.imgSessionType)
+    @Bind(R.id.imgSessionType)
     ImageView sessionType;
 
-    @InjectView(R.id.txtDescription)
+    @Bind(R.id.txtDescription)
     TextView description;
 
-    @InjectView(R.id.presenterView)
+    @Bind(R.id.presenterView)
     RecyclerView mPresenterView;
 
     private SessionPresenterAdapter mAdapter;
@@ -60,7 +60,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
         Timber.d("onCreate");
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         mPresenterView.setHasFixedSize(true);
         mPresenterView.setLayoutManager(new LinearLayoutManager(this));
