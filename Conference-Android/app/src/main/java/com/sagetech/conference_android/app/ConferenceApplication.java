@@ -9,7 +9,6 @@ import dagger.ObjectGraph;
 import timber.log.Timber;
 
 import static timber.log.Timber.DebugTree;
-import static timber.log.Timber.HollowTree;
 
 /**
  * Created by carlushenry on 5/28/14.
@@ -45,5 +44,14 @@ public class ConferenceApplication extends Application {
 
     public ObjectGraph createScopedGraph(Object[] modules) {
         return objectGraph.plus(modules);
+    }
+
+    // since Timber removed HollowTree, this is the new implementation of it.
+    public static class HollowTree extends Timber.Tree {
+
+        @Override
+        protected void log(int priority, String tag, String message, Throwable t) {
+            // purposely not implementing this method since it will not do anything and that is the intent
+        }
     }
 }
