@@ -14,7 +14,7 @@ import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewMod
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 /**
  * Created by carlushenry on 3/5/15.
@@ -80,18 +80,18 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
 
     public class ViewHolder extends BaseViewHolder implements View.OnClickListener {
-        @InjectView(R.id.day) public TextView dayView;
-        @InjectView(R.id.time) public TextView timeView;
-        @InjectView(R.id.title) public TextView titleView;
-        @InjectView(R.id.room) public TextView roomView;
-        @InjectView(R.id.iconType) public ImageView iconView;
+        @Bind(R.id.day) public TextView dayView;
+        @Bind(R.id.time) public TextView timeView;
+        @Bind(R.id.title) public TextView titleView;
+        @Bind(R.id.room) public TextView roomView;
+        @Bind(R.id.iconType) public ImageView iconView;
 
         private ConferenceSessionViewModel confereneSessionViewModel;
 
         // each data item is just a string in this case
         public ViewHolder(View v) {
             super(v);
-            ButterKnife.inject(this, v);
+            ButterKnife.bind(this, v);
             v.setOnClickListener(this);
         }
 
@@ -133,14 +133,14 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
 
     public class DayViewHolder extends BaseViewHolder {
-        @InjectView(R.id.dayTxt) public TextView dayView;
+        @Bind(R.id.dayTxt) public TextView dayView;
 
         private ConferenceSessionViewModel confereneSessionViewModel;
 
         // each data item is just a string in this case
         public DayViewHolder(View v) {
             super(v);
-            ButterKnife.inject(this, v);
+            ButterKnife.bind(this, v);
         }
 
         public void setDay(final String day) {

@@ -14,7 +14,7 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 /**
  * Created by carlushenry on 3/5/15.
@@ -62,20 +62,20 @@ public class ConferenceListAdapter extends RecyclerView.Adapter<ConferenceListAd
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        @InjectView(R.id.name)
+        @Bind(R.id.name)
         public TextView nameView;
-        @InjectView(R.id.cityAndState)
+        @Bind(R.id.cityAndState)
         public TextView cityAndStateView;
-        @InjectView(R.id.conferenceImage)
+        @Bind(R.id.conferenceImage)
         public ImageView conferenceImageView;
-        @InjectView(R.id.conferenceLayout)
+        @Bind(R.id.conferenceLayout)
         public View conferenceLayout;
 
         private ConferenceDataViewModel conferenceData;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
             conferenceLayout.setOnClickListener(this);
         }
 

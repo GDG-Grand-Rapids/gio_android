@@ -12,7 +12,7 @@ import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionDetailV
 import java.util.List;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 /**
  * Created by jrobertson on 4/4/15.
@@ -48,18 +48,18 @@ public class SessionPresenterAdapter extends RecyclerView.Adapter<SessionPresent
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        @InjectView(R.id.txtPresenterName)
+        @Bind(R.id.txtPresenterName)
         TextView name;
 
-        @InjectView(R.id.txtPresenterCompany)
+        @Bind(R.id.txtPresenterCompany)
         TextView company;
 
-        @InjectView(R.id.txtBio)
+        @Bind(R.id.txtBio)
         TextView bio;
 
         public ViewHolder(View view) {
             super(view);
-            ButterKnife.inject(this, view);
+            ButterKnife.bind(this, view);
         }
 
         public void setPresenterView(ConferenceSessionDetailViewModel.EventDetailPresenterView presenter) {
