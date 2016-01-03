@@ -24,7 +24,7 @@ import java.util.List;
 import javax.inject.Inject;
 
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 import timber.log.Timber;
 
 /**
@@ -35,13 +35,13 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
     @Inject
     IConferenceSessionListPresenter presenter = null;
 
-    @InjectView(R.id.confView)
+    @Bind(R.id.confView)
     RecyclerView mRecyclerView;
 
-    @InjectView(R.id.txtConferenceName)
+    @Bind(R.id.txtConferenceName)
     TextView txtConferenceName;
 
-    @InjectView(R.id.txtConferenceDate)
+    @Bind(R.id.txtConferenceDate)
     TextView txtConferenceDate;
 
     private ConferenceSessionListAdapter mAdapter;
@@ -53,7 +53,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        ButterKnife.inject(this);
+        ButterKnife.bind(this);
 
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
