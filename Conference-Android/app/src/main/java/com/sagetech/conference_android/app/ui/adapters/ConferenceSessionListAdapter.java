@@ -8,6 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
+import com.sagetech.conference_android.app.ui.Views.ConferenceSessionViewItem;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionType;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
 
@@ -24,7 +25,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     private ConferenceSessionListOnClickListener onClickListener;
 
     public interface ConferenceSessionListOnClickListener {
-        public void clicked(Long id);
+        void clicked(Long id);
     }
 
     public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions, ConferenceSessionListOnClickListener onClickListener) {
@@ -40,8 +41,8 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
             return new DayViewHolder(v);
         }
 
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.list_view_item, parent, false);
+        ConferenceSessionViewItem v = new ConferenceSessionViewItem( parent.getContext() );
+
         return new ViewHolder(v);
     }
 
@@ -79,55 +80,37 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     }
 
 
-    public class ViewHolder extends BaseViewHolder implements View.OnClickListener {
-        @Bind(R.id.day) public TextView dayView;
-        @Bind(R.id.time) public TextView timeView;
-        @Bind(R.id.title) public TextView titleView;
-        @Bind(R.id.room) public TextView roomView;
-        @Bind(R.id.iconType) public ImageView iconView;
+    public class ViewHolder extends BaseViewHolder implements View.OnClickListener
+    {
 
-        private ConferenceSessionViewModel confereneSessionViewModel;
+
+        private ConferenceSessionViewModel conferenceSessionViewModel;
+        private ConferenceSessionViewItem itemView;
 
         // each data item is just a string in this case
-        public ViewHolder(View v) {
+        public ViewHolder(View v)
+        {
             super(v);
-            ButterKnife.bind(this, v);
-            v.setOnClickListener(this);
+
+            if( v instanceof ConferenceSessionViewItem ) {
+                itemView = (ConferenceSessionViewItem) v;
+            }
+
+            itemView.setOnClickListener( this );
+
         }
 
-        public void setTitle(final String title) {
-            this.titleView.setText(title);
-        }
 
-        public void setDay(final String day) {
-            this.dayView.setText(day);
-        }
+        public void setData(ConferenceSessionViewModel conferenceSessionViewModel)
+        {
+            this.conferenceSessionViewModel = conferenceSessionViewModel;
 
-        public void setTime(final String time) {
-            this.timeView.setText(time);
-        }
-
-        public void setRoom(final String room) {
-            this.roomView.setText(room);
-        }
-
-        public void setIcon(final ConferenceSessionType type) {
-            iconView.setImageResource(type.getImage());
-        }
-
-        public void setData(ConferenceSessionViewModel confereneSessionViewModel) {
-            this.confereneSessionViewModel = confereneSessionViewModel;
-
-            setDay(confereneSessionViewModel.getDay());
-            setTime(confereneSessionViewModel.getTime());
-            setTitle(confereneSessionViewModel.getTitle());
-            setIcon(confereneSessionViewModel.getType());
-            setRoom(confereneSessionViewModel.getRoom());
+            itemView.setSessionInfo( conferenceSessionViewModel );
         }
 
         @Override
         public void onClick(View v) {
-            onClickListener.clicked(confereneSessionViewModel.getId());
+            onClickListener.clicked(conferenceSessionViewModel.getId());
         }
     }
 

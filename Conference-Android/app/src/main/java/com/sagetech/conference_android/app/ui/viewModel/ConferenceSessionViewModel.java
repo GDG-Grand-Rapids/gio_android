@@ -71,4 +71,17 @@ public class ConferenceSessionViewModel {
     public void setListItemType(SessionListItemType listItemType) {
         this.listItemType = listItemType;
     }
+
+    public int getSessionImageResource()
+    {
+        if( type != null )
+        {
+            return type.getImage();
+        }
+        else
+        {
+            //default in case there is no type set for some reason
+            return 1;
+        }
+    }
 }
