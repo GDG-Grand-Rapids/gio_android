@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <TextView
-        android:id="@+id/dayTxt"
+        android:id="@+id/header_day_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/purple_light"
         android:padding="@dimen/conference_detail_conf_name_padding"
-        android:text="Hello"
+        tools:text="Hello"
         android:textColor="@color/black" />
 
-</LinearLayout>
+</merge>

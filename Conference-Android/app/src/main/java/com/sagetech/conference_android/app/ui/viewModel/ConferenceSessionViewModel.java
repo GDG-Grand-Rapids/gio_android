@@ -1,5 +1,7 @@
 package com.sagetech.conference_android.app.ui.viewModel;
 
+import com.sagetech.conference_android.app.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -81,7 +83,7 @@ public class ConferenceSessionViewModel {
         else
         {
             //default in case there is no type set for some reason
-            return 1;
+            return R.drawable.codelabs_icon;
         }
     }
 }

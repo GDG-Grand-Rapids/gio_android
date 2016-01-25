@@ -4,14 +4,17 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
+import com.sagetech.conference_android.app.ui.Views.ConferenceSessionListItemHeader;
 import com.sagetech.conference_android.app.ui.Views.ConferenceSessionViewItem;
-import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionType;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -20,9 +23,13 @@ import butterknife.Bind;
 /**
  * Created by carlushenry on 3/5/15.
  */
-public class ConferenceSessionListAdapter extends RecyclerView.Adapter<ConferenceSessionListAdapter.BaseViewHolder> {
+public class ConferenceSessionListAdapter extends RecyclerView.Adapter<ConferenceSessionListAdapter.ViewHolder>
+    implements StickyRecyclerHeadersAdapter<ConferenceSessionListAdapter.DayViewHolder>
+
+{
     private final List<ConferenceSessionViewModel> conferenceSessions;
     private ConferenceSessionListOnClickListener onClickListener;
+    private ArrayList<Integer> dateChangedIndex;
 
     public interface ConferenceSessionListOnClickListener {
         void clicked(Long id);
@@ -31,34 +38,67 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions, ConferenceSessionListOnClickListener onClickListener) {
         this.conferenceSessions = conferenceSessions;
         this.onClickListener = onClickListener;
-    }
+        dateChangedIndex = new ArrayList<>();
+        dateChangedIndex.add(0);
+        int count = 0;
 
-    @Override
-    public BaseViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if (viewType == 2) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.list_day_hdr, parent, false);
-            return new DayViewHolder(v);
+        Calendar previousSession = Calendar.getInstance();
+        Calendar currentSession = Calendar.getInstance();
+
+        for( int i = 1; i < conferenceSessions.size(); i++ )
+        {
+            previousSession.setTime( conferenceSessions.get( i - 1 ).getStartDttm() );
+            currentSession.setTime( conferenceSessions.get( i ).getStartDttm() );
+            if( previousSession.get( Calendar.DAY_OF_YEAR ) != currentSession.get( Calendar.DAY_OF_YEAR ) )
+            {
+                dateChangedIndex.add( i );
+                count = i;
+            }
+            else
+            {
+                dateChangedIndex.add( count );
+            }
         }
+    }
 
-        ConferenceSessionViewItem v = new ConferenceSessionViewItem( parent.getContext() );
-
-        return new ViewHolder(v);
+    //RecyclerView.Adapter implementation
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    {
+        return new ViewHolder( new ConferenceSessionViewItem( parent.getContext() ) );
     }
 
     @Override
-    public int getItemViewType(int position) {
-        return getItem(position).getListItemType().getViewType();
-    }
-
-    @Override
-    public void onBindViewHolder(ConferenceSessionListAdapter.BaseViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, int position)
+    {
         holder.setData(getItem(position));
     }
 
     @Override
-    public long getItemId(int position) {
+    public long getItemId(int position)
+    {
         return getItem(position).getId();
+    }
+
+
+    //StickyRecyclerHeadersAdapter implementation
+    @Override
+    public long getHeaderId(int position)
+    {
+
+        return dateChangedIndex.get( position );
+    }
+
+    @Override
+    public DayViewHolder onCreateHeaderViewHolder(ViewGroup parent)
+    {
+        return new DayViewHolder( new ConferenceSessionListItemHeader( parent.getContext() ) );
+    }
+
+    @Override
+    public void onBindHeaderViewHolder(DayViewHolder holder, int position)
+    {
+        holder.setData( getItem( position ) );
     }
 
     @Override
@@ -70,20 +110,10 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         return conferenceSessions.get(position);
     }
 
-    public abstract class BaseViewHolder extends RecyclerView.ViewHolder {
-
-        public BaseViewHolder(View v) {
-            super(v);
-        }
-
-        public abstract void setData(ConferenceSessionViewModel confereneSessionViewModel);
-    }
 
 
-    public class ViewHolder extends BaseViewHolder implements View.OnClickListener
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
     {
-
-
         private ConferenceSessionViewModel conferenceSessionViewModel;
         private ConferenceSessionViewItem itemView;
 
@@ -115,26 +145,30 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     }
 
 
-    public class DayViewHolder extends BaseViewHolder {
-        @Bind(R.id.dayTxt) public TextView dayView;
 
-        private ConferenceSessionViewModel confereneSessionViewModel;
+
+    public class DayViewHolder extends RecyclerView.ViewHolder
+    {
+
+        private ConferenceSessionListItemHeader headerView;
 
         // each data item is just a string in this case
-        public DayViewHolder(View v) {
+        public DayViewHolder(View v)
+        {
             super(v);
-            ButterKnife.bind(this, v);
+
+            if( v instanceof  ConferenceSessionListItemHeader )
+            {
+                headerView = (ConferenceSessionListItemHeader)v;
+            }
         }
 
-        public void setDay(final String day) {
-            this.dayView.setText(day);
-        }
 
 
-        public void setData(ConferenceSessionViewModel confereneSessionViewModel) {
-            this.confereneSessionViewModel = confereneSessionViewModel;
-
-            setDay(confereneSessionViewModel.getDay());
+        public void setData(ConferenceSessionViewModel conferenceSessionViewModel)
+        {
+            headerView.setHeaderInfo(conferenceSessionViewModel.getDay());
         }
     }
+
 }

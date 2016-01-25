@@ -66,7 +66,10 @@ public class ConferenceSessionViewItem extends RelativeLayout
     }
 
 
-
-
-
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
+    {
+        //as a merge layout removes the layout attribute values we need to manually set the height
+        super.onMeasure(widthMeasureSpec, (int) getResources().getDimension( R.dimen.conference_session_list_item_height ) );
+    }
 }

@@ -17,6 +17,7 @@ import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionListPr
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceDetailViewModel;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionListModule;
+import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.Arrays;
 import java.util.List;
@@ -74,9 +75,15 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
 
 
     @Override
-    public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions) {
+    public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
+    {
         mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
         mRecyclerView.setAdapter(mAdapter);
+
+        // Add the sticky headers decoration
+        final StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration( mAdapter );
+        mRecyclerView.addItemDecoration( headersDecor );
+
     }
 
     @Override
