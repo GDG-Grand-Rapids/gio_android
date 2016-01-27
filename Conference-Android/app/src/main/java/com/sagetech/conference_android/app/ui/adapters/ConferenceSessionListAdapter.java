@@ -15,6 +15,7 @@ import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -29,7 +30,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 {
     private final List<ConferenceSessionViewModel> conferenceSessions;
     private ConferenceSessionListOnClickListener onClickListener;
-    private ArrayList<Integer> dateChangedIndex;
+    private HashMap< Integer, String > sessionDateToHeaderMap;
 
     public interface ConferenceSessionListOnClickListener {
         void clicked(Long id);
@@ -39,25 +40,18 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     {
         this.conferenceSessions = conferenceSessions;
         this.onClickListener = onClickListener;
-        dateChangedIndex = new ArrayList<>();
-        dateChangedIndex.add(0);
-        int count = 0;
 
-        Calendar previousSession = Calendar.getInstance();
+        sessionDateToHeaderMap = new HashMap<>();
+
+        //determine how many headers will be needed based on the days the sessions are on
         Calendar currentSession = Calendar.getInstance();
-
-        for( int i = 1; i < conferenceSessions.size(); i++ )
+        for ( ConferenceSessionViewModel item : conferenceSessions )
         {
-            previousSession.setTime( conferenceSessions.get( i - 1 ).getStartDttm() );
-            currentSession.setTime( conferenceSessions.get( i ).getStartDttm() );
-            if( previousSession.get( Calendar.DAY_OF_YEAR ) != currentSession.get( Calendar.DAY_OF_YEAR ) )
+            currentSession.setTime(item.getStartDttm());
+
+            if( !sessionDateToHeaderMap.containsKey( currentSession.get( Calendar.DAY_OF_YEAR ) ) )
             {
-                dateChangedIndex.add( i );
-                count = i;
-            }
-            else
-            {
-                dateChangedIndex.add( count );
+                sessionDateToHeaderMap.put( currentSession.get(Calendar.DAY_OF_YEAR), item.getDay() );
             }
         }
     }
@@ -86,7 +80,10 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     @Override
     public long getHeaderId(int position)
     {
-        return dateChangedIndex.get( position );
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime( getItem(position).getStartDttm() );
+
+        return calendar.get( Calendar.DAY_OF_YEAR );
     }
 
     @Override
@@ -98,7 +95,10 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     @Override
     public void onBindHeaderViewHolder(DayViewHolder holder, int position)
     {
-        holder.setData( getItem( position ) );
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime( getItem(position).getStartDttm() );
+
+        holder.setDay( sessionDateToHeaderMap.get( calendar.get( Calendar.DAY_OF_YEAR ) ) );
     }
 
     @Override
@@ -165,9 +165,9 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
 
 
-        public void setData(ConferenceSessionViewModel conferenceSessionViewModel)
+        public void setDay( String sessionDay )
         {
-            headerView.setHeaderInfo(conferenceSessionViewModel.getDay());
+            headerView.setHeaderInfo( sessionDay );
         }
     }
 
