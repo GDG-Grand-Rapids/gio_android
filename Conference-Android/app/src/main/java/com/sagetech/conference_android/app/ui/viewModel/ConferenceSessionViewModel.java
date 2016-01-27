@@ -18,7 +18,6 @@ public class ConferenceSessionViewModel {
     private String room;
     private Date startDttm;
     private ConferenceSessionType type;
-    private SessionListItemType listItemType;
 
     public Long getId() {
         return id;
@@ -64,14 +63,6 @@ public class ConferenceSessionViewModel {
 
     public void setType(ConferenceSessionType type) {
         this.type = type;
-    }
-
-    public SessionListItemType getListItemType() {
-        return listItemType;
-    }
-
-    public void setListItemType(SessionListItemType listItemType) {
-        this.listItemType = listItemType;
     }
 
     public int getSessionImageResource()
