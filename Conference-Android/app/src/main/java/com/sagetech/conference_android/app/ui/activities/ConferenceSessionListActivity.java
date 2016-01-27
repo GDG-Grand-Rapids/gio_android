@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
@@ -36,16 +37,12 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
     @Inject
     IConferenceSessionListPresenter presenter = null;
 
-    @Bind(R.id.confView)
+    @Bind(R.id.confSessionView)
     RecyclerView mRecyclerView;
 
     @Bind(R.id.txtConferenceName)
     TextView txtConferenceName;
 
-    @Bind(R.id.txtConferenceDate)
-    TextView txtConferenceDate;
-
-    private ConferenceSessionListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,12 +53,10 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
 
         ButterKnife.bind(this);
 
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
 
         setTitle("Event Sessions");
 
-        this.txtConferenceDate.setText(getIntent().getStringExtra("conferenceDate"));
         this.txtConferenceName.setText(getIntent().getStringExtra("conferenceName"));
 
         Long conferenceId = getIntent().getLongExtra("id", 0);
@@ -77,7 +72,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
     @Override
     public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
     {
-        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
+        ConferenceSessionListAdapter mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
         mRecyclerView.setAdapter(mAdapter);
 
         // Add the sticky headers decoration

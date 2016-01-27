@@ -2,7 +2,6 @@ package com.sagetech.conference_android.app.ui.Views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -12,7 +11,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 /**
- * Created by willmetz on 1/24/16.
+ * Custom view for the conference list header view.
  */
 public class ConferenceSessionListItemHeader extends LinearLayout
 {
@@ -34,21 +33,26 @@ public class ConferenceSessionListItemHeader extends LinearLayout
         init();
     }
 
-    @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
-        super.onMeasure(ViewGroup.LayoutParams.MATCH_PARENT, 50 );
-    }
 
     public void setHeaderInfo( String headerText )
     {
-        this.headerText.setText( headerText );
+        this.headerText.setText(headerText);
+
     }
+
+
 
     private void init()
     {
         inflate(getContext(), R.layout.conference_session_list_item_header, this);
         ButterKnife.bind(this);
+
+
+        //as a merge layout doesn't retain any parameters we need to set the layout dimensions programmatically
+        LinearLayout.LayoutParams params =
+                new LinearLayout.LayoutParams( LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT );
+        setLayoutParams(params);
+
     }
 
 }

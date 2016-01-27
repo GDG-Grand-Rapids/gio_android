@@ -35,7 +35,8 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         void clicked(Long id);
     }
 
-    public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions, ConferenceSessionListOnClickListener onClickListener) {
+    public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions, ConferenceSessionListOnClickListener onClickListener)
+    {
         this.conferenceSessions = conferenceSessions;
         this.onClickListener = onClickListener;
         dateChangedIndex = new ArrayList<>();
@@ -85,7 +86,6 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     @Override
     public long getHeaderId(int position)
     {
-
         return dateChangedIndex.get( position );
     }
 
