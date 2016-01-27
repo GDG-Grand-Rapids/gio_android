@@ -6,16 +6,13 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
-import com.sagetech.conference_android.app.model.ConferenceData;
+import com.sagetech.conference_android.app.ui.Views.SimpleDividerLineDecorator;
 import com.sagetech.conference_android.app.ui.adapters.ConferenceSessionListAdapter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionListPresenter;
-import com.sagetech.conference_android.app.ui.viewModel.ConferenceDetailViewModel;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionListModule;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
@@ -78,6 +75,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
         // Add the sticky headers decoration
         final StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration( mAdapter );
         mRecyclerView.addItemDecoration( headersDecor );
+
+        mRecyclerView.addItemDecoration( new SimpleDividerLineDecorator( this ) );
 
     }
 
