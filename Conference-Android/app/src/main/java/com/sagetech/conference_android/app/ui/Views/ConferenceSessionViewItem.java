@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
+import com.squareup.picasso.Picasso;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -55,7 +56,9 @@ public class ConferenceSessionViewItem extends RelativeLayout
         this.sessionRoom.setText( data.getRoom() );
         this.sessionTime.setText( data.getTime() );
         this.sessionTitle.setText( data.getTitle() );
-        this.icon.setImageResource(data.getSessionImageResource());
+
+
+        Picasso.with( getContext() ).load( data.getSessionImageResource() ).into( icon );
 
     }
 
