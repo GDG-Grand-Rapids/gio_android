@@ -6,7 +6,9 @@ import com.sagetech.conference_android.app.R;
  * Created by jrobertson on 5/15/15.
  */
 public enum ConferenceSessionType {
-    CODELAB(1, R.drawable.codelabs_icon), STREAMING(2, R.drawable.googlestream_icon), ONSITE(3, R.drawable.presentation_icon);
+    CODELAB(1, R.drawable.codelabs_icon),
+    STREAMING(2, R.drawable.googlestream_icon),
+    ONSITE(3, R.drawable.presentation_icon);
 
     private int id;
     private int image;

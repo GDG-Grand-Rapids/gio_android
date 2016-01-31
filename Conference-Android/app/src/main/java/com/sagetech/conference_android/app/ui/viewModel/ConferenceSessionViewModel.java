@@ -1,5 +1,7 @@
 package com.sagetech.conference_android.app.ui.viewModel;
 
+import com.sagetech.conference_android.app.R;
+
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -16,7 +18,6 @@ public class ConferenceSessionViewModel {
     private String room;
     private Date startDttm;
     private ConferenceSessionType type;
-    private SessionListItemType listItemType;
 
     public Long getId() {
         return id;
@@ -64,11 +65,16 @@ public class ConferenceSessionViewModel {
         this.type = type;
     }
 
-    public SessionListItemType getListItemType() {
-        return listItemType;
-    }
-
-    public void setListItemType(SessionListItemType listItemType) {
-        this.listItemType = listItemType;
+    public int getSessionImageResource()
+    {
+        if( type != null )
+        {
+            return type.getImage();
+        }
+        else
+        {
+            //default in case there is no type set for some reason
+            return R.drawable.codelabs_icon;
+        }
     }
 }
