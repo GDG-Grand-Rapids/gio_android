@@ -4,7 +4,6 @@ import com.sagetech.conference_android.app.model.ConferenceSessionData;
 import com.sagetech.conference_android.app.model.RoomData;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionType;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
-import com.sagetech.conference_android.app.ui.viewModel.SessionListItemType;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -30,7 +29,7 @@ public class ConferenceSessionViewBuilder {
 
         for (Map.Entry<Date, List<ConferenceSessionData>> entrySet : dateMap.entrySet()) {
 
-            confSessionViewModels.add(buildDayHeader(entrySet.getKey()));
+          //  confSessionViewModels.add(buildDayHeader(entrySet.getKey()));
 
             for (ConferenceSessionData currConfSession : entrySet.getValue()) {
                 Long roomId = currConfSession.getRoomId();
@@ -74,7 +73,6 @@ public class ConferenceSessionViewBuilder {
     private static ConferenceSessionViewModel buildDayHeader(Date date) {
         ConferenceSessionViewModel vModel = new ConferenceSessionViewModel();
         vModel.setStartDttm(date);
-        vModel.setListItemType(SessionListItemType.DAYHEADER);
         return vModel;
     }
 
@@ -101,7 +99,6 @@ public class ConferenceSessionViewBuilder {
         confViewModel.setRoom(roomData.getShortDesc());
         confViewModel.setStartDttm(currConfSession.getStartDttm());
         confViewModel.setTitle(currConfSession.getName());
-        confViewModel.setListItemType(SessionListItemType.SESSION);
 
         if (currConfSession.getConferenceSessionType() != null) {
             confViewModel.setType(ConferenceSessionType.fromId(currConfSession.getConferenceSessionType().getId()));
