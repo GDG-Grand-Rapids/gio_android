@@ -19,7 +19,7 @@ android {
 
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 23
 
         versionCode versionMajor * 10000 + versionMinor * 1000 + versionPatch * 100 + versionBuild
@@ -47,13 +47,26 @@ android {
 
     buildTypes {
         debug {
-            buildConfigField "String", "API_BASE_URL", "\"http://gioapi.gdggr.org\""
+
             signingConfig signingConfigs.debug
         }
         release {
-            buildConfigField "String", "API_BASE_URL", "\"http://gioapi.gdggr.org\""
+
             signingConfig signingConfigs.release
         }
+    }
+
+    productFlavors {
+
+        prod{
+
+        }
+
+        local{
+
+        }
+
+
     }
 }
 
