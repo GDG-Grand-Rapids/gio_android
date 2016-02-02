@@ -11,6 +11,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
 import com.sagetech.conference_android.app.BuildConfig;
 import com.sagetech.conference_android.app.ConferenceApplication;
+import com.sagetech.conference_android.app.Config;
 import com.sagetech.conference_android.app.api.ConferenceApi;
 import com.sagetech.conference_android.app.api.ConferenceController;
 
@@ -62,7 +63,7 @@ public final class ConferenceModule {
                 Timber.i(arg0);
             }
 
-        }).setEndpoint(BuildConfig.API_BASE_URL).setConverter(new GsonConverter(gson)).build();
+        }).setEndpoint(Config.API_BASE_URL).setConverter(new GsonConverter(gson)).build();
         return restAdapter.create(ConferenceApi.class);
     }
 
