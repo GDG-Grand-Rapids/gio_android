@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.sagetech.conference_android.app.R;
 
@@ -15,18 +16,17 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-public class SplashActivity extends ActionBarActivity {
+public class SplashActivity extends AppCompatActivity
+{
 
     private Subscription subscription;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
-
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
 
         subscription = AppObservable.bindActivity(this, Observable.just(1))
                 .delay(3, TimeUnit.SECONDS)
@@ -55,8 +55,10 @@ public class SplashActivity extends ActionBarActivity {
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause()
+    {
+        super.onPause();
+
         subscription.unsubscribe();
     }
 
