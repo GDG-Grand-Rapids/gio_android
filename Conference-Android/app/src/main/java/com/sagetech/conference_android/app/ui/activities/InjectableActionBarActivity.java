@@ -3,6 +3,7 @@ package com.sagetech.conference_android.app.ui.activities;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.sagetech.conference_android.app.ConferenceApplication;
 import com.sagetech.conference_android.app.R;
@@ -14,18 +15,21 @@ import dagger.ObjectGraph;
 /**
  * Created by carlushenry on 2/12/15.
  */
-public abstract class InjectableActionBarActivity extends ActionBarActivity {
+public abstract class InjectableActionBarActivity extends AppCompatActivity
+{
 
     private ObjectGraph activityGraph;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         injectThisActivityIfNecessary();
     }
 
-    private void injectThisActivityIfNecessary() {
+    private void injectThisActivityIfNecessary()
+    {
         List<Object> modules = getModules();
         if (modules == null) {
             return;
@@ -34,7 +38,8 @@ public abstract class InjectableActionBarActivity extends ActionBarActivity {
         activityGraph.inject(this);
     }
 
-    @Override protected void onDestroy() {
+    @Override protected void onDestroy()
+    {
         super.onDestroy();
         activityGraph = null;
     }
