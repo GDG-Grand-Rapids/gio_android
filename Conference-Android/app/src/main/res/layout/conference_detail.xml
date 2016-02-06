@@ -36,8 +36,8 @@
         android:layout_height="wrap_content">
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <TextView
@@ -64,7 +64,7 @@
                 android:textStyle="bold" />
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="15dp"
                 android:background="@color/conference_detail_title_background" />
@@ -103,7 +103,7 @@
                 android:textStyle="bold" />
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="15dp"
                 android:background="@color/conference_detail_title_background" />
@@ -151,7 +151,7 @@
                 android:textStyle="bold" />
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="15dp"
                 android:background="@color/conference_detail_title_background" />
@@ -205,7 +205,7 @@
                 android:textStyle="bold" />
 
             <View
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:layout_margin="15dp"
                 android:background="@color/conference_detail_title_background" />
