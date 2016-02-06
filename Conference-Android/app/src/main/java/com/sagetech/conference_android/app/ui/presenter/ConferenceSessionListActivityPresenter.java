@@ -58,13 +58,15 @@ public class ConferenceSessionListActivityPresenter implements IConferenceSessio
         };
     }
 
-    private Observable<List<ConferenceSessionViewModel>> createConferenceSessionViewModelObservable(Long conferenceId) {
+    private Observable<List<ConferenceSessionViewModel>> createConferenceSessionViewModelObservable(Long conferenceId)
+    {
 
-        Observable<List<ConferenceSessionData>> conferenceSessionObservable = conferenceController.getConferenceSessionsById(conferenceId).cache();
+        Observable<List<ConferenceSessionData>> conferenceSessionObservable = conferenceController.getConferenceSessionsById(conferenceId);
 
         Observable<Map<Long, RoomData>> roomDataObservable = conferenceSessionObservable.flatMap(new Func1<List<ConferenceSessionData>, Observable<ConferenceSessionData>>() {
             @Override
-            public Observable<ConferenceSessionData> call(List<ConferenceSessionData> conferenceSessionDatas) {
+            public Observable<ConferenceSessionData> call(List<ConferenceSessionData> conferenceSessionDatas)
+            {
                 return Observable.from(conferenceSessionDatas);
             }
         }).map(new Func1<ConferenceSessionData, Long>() {

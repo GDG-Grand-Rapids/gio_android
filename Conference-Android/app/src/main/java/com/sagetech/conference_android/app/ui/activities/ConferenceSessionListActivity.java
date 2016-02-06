@@ -29,7 +29,10 @@ import timber.log.Timber;
 /**
  * Created by adam on 2/21/15.
  */
-public class ConferenceSessionListActivity extends InjectableActionBarActivity implements IConferenceSessionActivity, ConferenceSessionListAdapter.ConferenceSessionListOnClickListener {
+public class ConferenceSessionListActivity extends InjectableActionBarActivity
+        implements IConferenceSessionActivity,
+        ConferenceSessionListAdapter.ConferenceSessionListOnClickListener
+{
 
     @Inject
     IConferenceSessionListPresenter presenter = null;
@@ -42,7 +45,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conference_session_items);
 
@@ -98,7 +102,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity i
     }
 
 
-    private void launchEventDetailActivity(Long sessionId) {
+    private void launchEventDetailActivity(Long sessionId)
+    {
         Timber.d(String.format("Session Selected: %s", sessionId));
 
         Intent eventDetailIntent = new Intent(this, ConferenceSessionDetailActivity.class);
