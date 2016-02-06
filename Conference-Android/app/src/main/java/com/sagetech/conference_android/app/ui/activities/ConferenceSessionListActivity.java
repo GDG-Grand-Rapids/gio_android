@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
 import android.widget.TextView;
 
+import com.sagetech.conference_android.app.Config;
 import com.sagetech.conference_android.app.R;
 import com.sagetech.conference_android.app.ui.Views.SimpleDividerLineDecorator;
 import com.sagetech.conference_android.app.ui.adapters.ConferenceSessionListAdapter;
@@ -60,8 +61,23 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         this.txtConferenceName.setText(getIntent().getStringExtra("conferenceName"));
 
-        Long conferenceId = getIntent().getLongExtra("id", 0);
-        presenter.initialize(conferenceId);
+
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+
+        presenter.initialize( Config.CONFERENCE_ID );
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+
+        presenter.onDestroy();
     }
 
     @Override
@@ -85,7 +101,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         switch (item.getItemId()) {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
@@ -93,12 +110,6 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
                 return true;
         }
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        presenter.onDestroy();
     }
 
 

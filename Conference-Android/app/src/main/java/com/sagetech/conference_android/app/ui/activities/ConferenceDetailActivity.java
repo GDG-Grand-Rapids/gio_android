@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sagetech.conference_android.app.Config;
 import com.sagetech.conference_android.app.R;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceDetailActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceDetailActivityPresenter;
@@ -50,10 +51,6 @@ public class ConferenceDetailActivity extends InjectableActionBarActivity implem
     IConferenceDetailActivityPresenter presenter;
 
 
-
-    private Long conferenceId;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -61,7 +58,6 @@ public class ConferenceDetailActivity extends InjectableActionBarActivity implem
         setContentView(R.layout.conference_detail);
         ButterKnife.bind(this);
 
-        conferenceId = getIntent().getLongExtra("id", 0);
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
@@ -77,7 +73,6 @@ public class ConferenceDetailActivity extends InjectableActionBarActivity implem
                 @Override
                 public void onClick(View v) {
                     Intent conferenceSessionListIntent = new Intent( v.getContext(), ConferenceSessionListActivity.class);
-                    conferenceSessionListIntent.putExtra("id", conferenceId);
                     conferenceSessionListIntent.putExtra("conferenceName", txtConferenceName.getText());
                     conferenceSessionListIntent.putExtra("conferenceDate", txtConferenceDate.getText());
                     startActivity(conferenceSessionListIntent);
@@ -86,7 +81,7 @@ public class ConferenceDetailActivity extends InjectableActionBarActivity implem
         }
 
         // yes I am being lazy...
-        presenter.initialize(conferenceId);
+        presenter.initialize( Config.CONFERENCE_ID );
 
     }
 

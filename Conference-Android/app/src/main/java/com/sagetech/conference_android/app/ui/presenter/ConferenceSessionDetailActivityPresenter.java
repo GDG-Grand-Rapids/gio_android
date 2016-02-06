@@ -32,8 +32,10 @@ public class ConferenceSessionDetailActivityPresenter implements IConferenceSess
         this.conferenceController = conferenceController;
     }
 
-    public void initialize(Long eventId) {
-        Observable<ConferenceSessionDetailViewModel> conferenceSessionDetailViewObservable = createConferenceSessionDetailViewObservable(eventId);
+    public void initialize(long eventId)
+    {
+        Observable<ConferenceSessionDetailViewModel> conferenceSessionDetailViewObservable =
+                createConferenceSessionDetailViewObservable(eventId);
 
 
         subscription = conferenceSessionDetailViewObservable

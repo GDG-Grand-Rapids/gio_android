@@ -12,6 +12,8 @@ import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import timber.log.Timber;
@@ -19,7 +21,8 @@ import timber.log.Timber;
 /**
  * Created by adam on 2/21/15.
  */
-public class ConferenceSessionListActivityPresenter implements IConferenceSessionListPresenter {
+public class ConferenceSessionListActivityPresenter implements IConferenceSessionListPresenter
+{
     private IConferenceSessionActivity conferenceSessionListActivity;
     private ConferenceController conferenceController;
     private Subscription subscription;
@@ -29,29 +32,23 @@ public class ConferenceSessionListActivityPresenter implements IConferenceSessio
         this.conferenceController = conferenceController;
     }
 
-    public void initialize(Long conferenceId) {
-        Observable<List<ConferenceSessionViewModel>> conferenceDataObservable = createConferenceSessionViewModelObservable(conferenceId);
+    public void initialize( long conferenceId )
+    {
+        Observable<List<ConferenceSessionViewModel>> conferenceDataObservable =
+                createConferenceSessionViewModelObservable(conferenceId);
 
         subscription = conferenceDataObservable
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(populateConferenceSessionListSubscriber());
     }
 
-    private Subscriber<List<ConferenceSessionViewModel>> populateConferenceSessionListSubscriber() {
-        return new Subscriber<List<ConferenceSessionViewModel>>() {
+    private Action1<List<ConferenceSessionViewModel>> populateConferenceSessionListSubscriber()
+    {
+        return new Action1<List<ConferenceSessionViewModel>>()
+        {
             @Override
-            public void onCompleted() {
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Timber.e(e, "Error in ConferenceSessionListActivityPresenter", (Object) null);
-
-            }
-
-            @Override
-            public void onNext(List<ConferenceSessionViewModel> conferenceSessionViewModels) {
+            public void call( List<ConferenceSessionViewModel> conferenceSessionViewModels )
+            {
                 conferenceSessionListActivity.populateConferenceSessions(conferenceSessionViewModels);
             }
 
@@ -61,9 +58,11 @@ public class ConferenceSessionListActivityPresenter implements IConferenceSessio
     private Observable<List<ConferenceSessionViewModel>> createConferenceSessionViewModelObservable(Long conferenceId)
     {
 
-        Observable<List<ConferenceSessionData>> conferenceSessionObservable = conferenceController.getConferenceSessionsById(conferenceId);
+        Observable<List<ConferenceSessionData>> conferenceSessionObservable =
+                conferenceController.getConferenceSessionsById( conferenceId );
 
-        Observable<Map<Long, RoomData>> roomDataObservable = conferenceSessionObservable.flatMap(new Func1<List<ConferenceSessionData>, Observable<ConferenceSessionData>>() {
+        Observable<Map<Long, RoomData>> roomDataObservable =
+                conferenceSessionObservable.flatMap(new Func1<List<ConferenceSessionData>, Observable<ConferenceSessionData>>() {
             @Override
             public Observable<ConferenceSessionData> call(List<ConferenceSessionData> conferenceSessionDatas)
             {

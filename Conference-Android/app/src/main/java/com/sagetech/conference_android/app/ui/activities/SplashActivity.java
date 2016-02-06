@@ -46,7 +46,6 @@ public class SplashActivity extends AppCompatActivity
                     public void onCompleted() {
                         Timber.i("onCompleted");
                         Intent intent = new Intent(getApplicationContext(), ConferenceDetailActivity.class);
-                        intent.putExtra("id", Long.valueOf(getString(R.string.google_io_conference_id)));
                         startActivity(intent);
                         finish();
                     }

@@ -19,14 +19,15 @@ import butterknife.Bind;
 /**
  * Created by carlushenry on 3/5/15.
  */
-public class ConferenceListAdapter extends RecyclerView.Adapter<ConferenceListAdapter.ViewHolder> {
+public class ConferenceListAdapter extends RecyclerView.Adapter<ConferenceListAdapter.ViewHolder>
+{
 
     private ConferenceOnClickListener onClickListener;
     private List<ConferenceDataViewModel> conferenceDatas;
 
 
     public interface ConferenceOnClickListener {
-        public void clicked(Long conferenceId, View imgView);
+        void clicked(Long conferenceId, View imgView);
     }
 
     public ConferenceListAdapter(List<ConferenceDataViewModel> conferenceDatas, ConferenceOnClickListener conferencesOnClickListener) {
