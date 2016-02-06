@@ -38,12 +38,7 @@
             android:name=".ui.activities.ConferenceSessionDetailActivity"
             android:label="@string/title_activity_eventdetail"
             android:parentActivityName=".ui.activities.ConferenceListActivity" >
-
-            <!-- Parent activity meta-data to support 4.0 and lower -->
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".ui.activities.ConferenceListActivity" />
-            >
+            
         </activity>
         <activity
             android:name=".ui.activities.ConferenceListActivity"
