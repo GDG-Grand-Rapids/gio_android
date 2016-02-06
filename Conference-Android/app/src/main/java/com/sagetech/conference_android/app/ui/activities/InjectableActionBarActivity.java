@@ -13,7 +13,8 @@ import java.util.List;
 import dagger.ObjectGraph;
 
 /**
- * Created by carlushenry on 2/12/15.
+ * Base activity for the application to ensure that activities all extend the
+ * AppCompatActivity.
  */
 public abstract class InjectableActionBarActivity extends AppCompatActivity
 {

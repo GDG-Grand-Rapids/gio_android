@@ -16,6 +16,10 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
+/**
+ * A splash screen activity that is displayed on app start for
+ * a brief time.
+ */
 public class SplashActivity extends AppCompatActivity
 {
 
@@ -27,6 +31,13 @@ public class SplashActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
+
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
 
         subscription = AppObservable.bindActivity(this, Observable.just(1))
                 .delay(3, TimeUnit.SECONDS)
@@ -50,8 +61,6 @@ public class SplashActivity extends AppCompatActivity
                         Timber.i("On Next");
                     }
                 });
-        Timber.i("done!!!");
-
     }
 
     @Override
