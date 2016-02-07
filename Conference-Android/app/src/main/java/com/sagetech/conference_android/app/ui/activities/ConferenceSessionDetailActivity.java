@@ -99,6 +99,14 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     }
 
     @Override
+    public void onBackPressed()
+    {
+        setResult( RESULT_OK );
+
+        super.onBackPressed();
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
