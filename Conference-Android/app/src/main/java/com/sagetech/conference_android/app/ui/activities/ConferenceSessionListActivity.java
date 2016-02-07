@@ -37,7 +37,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 {
 
     @Inject
-    IConferenceSessionListPresenter presenter = null;
+    IConferenceSessionListPresenter presenter;
 
     @Bind(R.id.confSessionView)
     RecyclerView mRecyclerView;
@@ -46,6 +46,10 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     TextView txtConferenceName;
 
     private long conferenceID;
+
+    //need to keep these guys as class variables so they can be removed when needed
+    private StickyRecyclerHeadersDecoration headersDecor;
+    private SimpleDividerLineDecorator dividerLineDecorator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -113,11 +117,23 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         ConferenceSessionListAdapter mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
         mRecyclerView.setAdapter(mAdapter);
 
-        // Add the sticky headers decoration
-        final StickyRecyclerHeadersDecoration headersDecor = new StickyRecyclerHeadersDecoration( mAdapter );
-        mRecyclerView.addItemDecoration( headersDecor );
 
-        mRecyclerView.addItemDecoration( new SimpleDividerLineDecorator( this ) );
+        //ensure the old decors are removed (if there are any)
+        if( headersDecor != null )
+        {
+            mRecyclerView.removeItemDecoration(headersDecor);
+        }
+        if( dividerLineDecorator != null )
+        {
+            mRecyclerView.removeItemDecoration( dividerLineDecorator );
+        }
+
+        // Add the sticky headers decoration
+        headersDecor = new StickyRecyclerHeadersDecoration( mAdapter );
+        mRecyclerView.addItemDecoration(headersDecor);
+
+        dividerLineDecorator = new SimpleDividerLineDecorator( this );
+        mRecyclerView.addItemDecoration( dividerLineDecorator );
 
     }
 
