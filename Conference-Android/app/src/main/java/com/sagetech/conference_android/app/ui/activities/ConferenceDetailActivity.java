@@ -16,6 +16,7 @@ import com.sagetech.conference_android.app.ui.presenter.IConferenceDetailActivit
 import com.sagetech.conference_android.app.ui.presenter.IConferenceDetailActivityPresenter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceListPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceDetailViewModel;
+import com.sagetech.conference_android.app.util.ConferenceIntents;
 import com.sagetech.conference_android.app.util.module.ConferenceDetailModule;
 import com.sagetech.conference_android.app.util.module.ConferenceListModule;
 import com.squareup.picasso.Picasso;
@@ -72,10 +73,12 @@ public class ConferenceDetailActivity extends InjectableActionBarActivity implem
             imgConfMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent conferenceSessionListIntent = new Intent( v.getContext(), ConferenceSessionListActivity.class);
-                    conferenceSessionListIntent.putExtra("conferenceName", txtConferenceName.getText());
-                    conferenceSessionListIntent.putExtra("conferenceDate", txtConferenceDate.getText());
-                    startActivity(conferenceSessionListIntent);
+
+                    startActivity(ConferenceIntents.getConferenceDetailsIntent( getApplicationContext(),
+                            txtConferenceName.getText().toString(),
+                            txtConferenceDate.getText().toString(),
+                            Config.CONFERENCE_ID
+                    ));
                 }
             });
         }

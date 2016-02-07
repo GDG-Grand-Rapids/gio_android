@@ -15,6 +15,7 @@ import com.sagetech.conference_android.app.ui.adapters.ConferenceSessionListAdap
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionListPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
+import com.sagetech.conference_android.app.util.ConferenceIntents;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionListModule;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -44,6 +45,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Bind(R.id.txtConferenceName)
     TextView txtConferenceName;
 
+    private long conferenceID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -59,9 +61,16 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         setTitle("Event Sessions");
 
-        this.txtConferenceName.setText(getIntent().getStringExtra("conferenceName"));
-
-
+        if( savedInstanceState == null )
+        {
+            txtConferenceName.setText(getIntent().getStringExtra( ConferenceIntents.CONFERENCE_NAME_KEY ) );
+            conferenceID = getIntent().getLongExtra( ConferenceIntents.CONFERENCE_ID_KEY, 0 );
+        }
+        else
+        {
+            txtConferenceName.setText( savedInstanceState.getString( ConferenceIntents.CONFERENCE_NAME_KEY ) );
+            conferenceID = savedInstanceState.getLong(ConferenceIntents.CONFERENCE_ID_KEY, 0);
+        }
     }
 
     @Override
@@ -69,7 +78,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     {
         super.onResume();
 
-        presenter.initialize( Config.CONFERENCE_ID );
+        presenter.initialize( conferenceID );
     }
 
     @Override
@@ -79,6 +88,18 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         presenter.onDestroy();
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        outState.putString(ConferenceIntents.CONFERENCE_NAME_KEY ,
+                getIntent().getStringExtra( ConferenceIntents.CONFERENCE_NAME_KEY  ) );
+
+        outState.putLong( ConferenceIntents.CONFERENCE_ID_KEY, conferenceID );
+
+        super.onSaveInstanceState(outState);
+    }
+
 
     @Override
     protected List<Object> getModules() {
@@ -103,7 +124,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
-        switch (item.getItemId()) {
+        switch (item.getItemId())
+        {
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
                 NavUtils.navigateUpFromSameTask(this);
@@ -113,18 +135,15 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     }
 
 
-    private void launchEventDetailActivity(Long sessionId)
+
+    @Override
+    public void clicked( Long sessionId )
     {
+
         Timber.d(String.format("Session Selected: %s", sessionId));
 
         Intent eventDetailIntent = new Intent(this, ConferenceSessionDetailActivity.class);
         eventDetailIntent.putExtra("id", sessionId);
         startActivity(eventDetailIntent);
-    }
-
-
-    @Override
-    public void clicked(Long id) {
-        launchEventDetailActivity(id);
     }
 }

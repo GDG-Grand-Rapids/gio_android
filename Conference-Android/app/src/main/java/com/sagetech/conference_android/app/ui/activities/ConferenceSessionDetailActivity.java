@@ -1,8 +1,11 @@
 package com.sagetech.conference_android.app.ui.activities;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -27,7 +30,9 @@ import timber.log.Timber;
 /**
  * This is a class for displaying the conference session detail.
  */
-public class ConferenceSessionDetailActivity extends InjectableActionBarActivity implements IConferenceSessionDetailActivity {
+public class ConferenceSessionDetailActivity extends InjectableActionBarActivity implements
+        IConferenceSessionDetailActivity
+{
 
     @Inject
     IConferenceSessionDetailPresenter presenter;
@@ -74,17 +79,17 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Override
     public void populateWithConferenceSessionDetailView(ConferenceSessionDetailViewModel eventDetailViewModel)
     {
-        title.setText( eventDetailViewModel.getTitle() );
+        title.setText(eventDetailViewModel.getTitle());
 
-        schedule.setText( eventDetailViewModel.getEventDateAndDuration() );
+        schedule.setText(eventDetailViewModel.getEventDateAndDuration());
 
-        room.setText( eventDetailViewModel.getRoomName() );
+        room.setText(eventDetailViewModel.getRoomName());
 
         description.setText(eventDetailViewModel.getDescription());
 
-        Picasso.with( this ).load( eventDetailViewModel.getType().getImage() ).into( sessionType );
+        Picasso.with( this ).load( eventDetailViewModel.getType().getImage() ).into(sessionType);
 
-        mPresenterView.setAdapter( new SessionPresenterAdapter(eventDetailViewModel.getPresenters()) );
+        mPresenterView.setAdapter(new SessionPresenterAdapter(eventDetailViewModel.getPresenters()));
     }
 
     @Override
@@ -93,6 +98,24 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
         return Arrays.<Object>asList(new ConferenceSessionDetailModule(this));
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch (item.getItemId())
+        {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+
+                //Allows us to reuse the already running instance of this activity as opposed to
+                //starting a new activity without any state data.
+                Intent intent = NavUtils.getParentActivityIntent(this);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                NavUtils.navigateUpTo(this, intent);
+
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
 
 }
