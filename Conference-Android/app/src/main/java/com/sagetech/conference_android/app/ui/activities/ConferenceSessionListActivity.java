@@ -1,5 +1,6 @@
 package com.sagetech.conference_android.app.ui.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -51,6 +52,9 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     private StickyRecyclerHeadersDecoration headersDecor;
     private SimpleDividerLineDecorator dividerLineDecorator;
 
+
+    private boolean refreshData;
+
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
@@ -75,6 +79,9 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
             txtConferenceName.setText( savedInstanceState.getString( ConferenceIntents.CONFERENCE_NAME_KEY ) );
             conferenceID = savedInstanceState.getLong(ConferenceIntents.CONFERENCE_ID_KEY, 0);
         }
+
+        //assume we are going to refresh the data
+        refreshData = true;
     }
 
     @Override
@@ -82,15 +89,22 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     {
         super.onResume();
 
-        presenter.initialize( conferenceID );
+        if( refreshData )
+        {
+            presenter.initialize(conferenceID);
+        }
+
+        //mark data as needing refresh in case the app goes in the background
+        refreshData = true;
     }
 
     @Override
-    protected void onPause()
+    protected void onStop()
     {
-        super.onPause();
+        super.onStop();
 
-        presenter.onDestroy();
+        //in case there was an issue receiving the data in the subscriber, ensure it is unsubscribed
+        presenter.onUnsubscribe();
     }
 
     @Override
@@ -117,7 +131,6 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         ConferenceSessionListAdapter mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
         mRecyclerView.setAdapter(mAdapter);
 
-
         //ensure the old decors are removed (if there are any)
         if( headersDecor != null )
         {
@@ -134,6 +147,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         dividerLineDecorator = new SimpleDividerLineDecorator( this );
         mRecyclerView.addItemDecoration( dividerLineDecorator );
+
+        presenter.onUnsubscribe();
 
     }
 
@@ -160,6 +175,17 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         Intent eventDetailIntent = new Intent(this, ConferenceSessionDetailActivity.class);
         eventDetailIntent.putExtra("id", sessionId);
-        startActivity(eventDetailIntent);
+        startActivityForResult(eventDetailIntent, 1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if( requestCode == 1 && resultCode == RESULT_OK )
+        {
+            refreshData = false;
+        }
     }
 }

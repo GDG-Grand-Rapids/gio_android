@@ -108,9 +108,11 @@ public class ConferenceSessionListActivityPresenter implements IConferenceSessio
         });
     }
 
-
-    public void onDestroy() {
+    @Override
+    public void onUnsubscribe()
+    {
         subscription.unsubscribe();
     }
+
 
 }

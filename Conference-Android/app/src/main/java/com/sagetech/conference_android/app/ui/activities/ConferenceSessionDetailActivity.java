@@ -106,11 +106,14 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
             // Respond to the action bar's Up/Home button
             case android.R.id.home:
 
+                setResult( RESULT_OK );
                 //Allows us to reuse the already running instance of this activity as opposed to
                 //starting a new activity without any state data.
                 Intent intent = NavUtils.getParentActivityIntent(this);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 NavUtils.navigateUpTo(this, intent);
+
+
 
                 return true;
         }

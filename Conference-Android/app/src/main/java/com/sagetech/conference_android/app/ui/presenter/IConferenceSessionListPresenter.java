@@ -7,5 +7,5 @@ public interface IConferenceSessionListPresenter
 {
     void initialize( long conferenceId );
 
-    void onDestroy();
+    void onUnsubscribe();
 }
