@@ -10,11 +10,13 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.sagetech.conference_android.app.Config;
 import com.sagetech.conference_android.app.R;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceDetailActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceDetailActivityPresenter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceListPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceDetailViewModel;
+import com.sagetech.conference_android.app.util.ConferenceIntents;
 import com.sagetech.conference_android.app.util.module.ConferenceDetailModule;
 import com.sagetech.conference_android.app.util.module.ConferenceListModule;
 import com.squareup.picasso.Picasso;
@@ -30,7 +32,8 @@ import butterknife.Bind;
 import butterknife.OnClick;
 import timber.log.Timber;
 
-public class ConferenceDetailActivity extends InjectableActionBarActivity implements IConferenceDetailActivity {
+public class ConferenceDetailActivity extends InjectableActionBarActivity implements IConferenceDetailActivity
+{
 
 
     @Bind(R.id.txtConferenceName)
@@ -48,37 +51,40 @@ public class ConferenceDetailActivity extends InjectableActionBarActivity implem
     @Inject
     IConferenceDetailActivityPresenter presenter;
 
-    ImageView imgConfMap;
-
-    private Long conferenceId;
-
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.conference_detail);
         ButterKnife.bind(this);
 
-        conferenceId = getIntent().getLongExtra("id", 0);
 
-        getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
-        getSupportActionBar().setCustomView(R.layout.actionbar_conference_detail);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
 
-        imgConfMap = (ImageView) getSupportActionBar().getCustomView().findViewById(R.id.imgConfDetailMap);
-        imgConfMap.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent conferenceSessionListIntent = new Intent(imgConfMap.getContext(), ConferenceSessionListActivity.class);
-                conferenceSessionListIntent.putExtra("id", conferenceId);
-                conferenceSessionListIntent.putExtra("conferenceName", txtConferenceName.getText());
-                conferenceSessionListIntent.putExtra("conferenceDate", txtConferenceDate.getText());
-                startActivity(conferenceSessionListIntent);
-            }
-        });
+        if( actionBar != null )
+        {
+            actionBar.setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+            actionBar.setCustomView(R.layout.actionbar_conference_detail);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+
+            ImageView imgConfMap = ButterKnife.findById( actionBar.getCustomView(), R.id.imgConfDetailMap );
+
+            imgConfMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                    startActivity(ConferenceIntents.getConferenceDetailsIntent( getApplicationContext(),
+                            txtConferenceName.getText().toString(),
+                            txtConferenceDate.getText().toString(),
+                            Config.CONFERENCE_ID
+                    ));
+                }
+            });
+        }
 
         // yes I am being lazy...
-        presenter.initialize(conferenceId);
+        presenter.initialize( Config.CONFERENCE_ID );
 
     }
 

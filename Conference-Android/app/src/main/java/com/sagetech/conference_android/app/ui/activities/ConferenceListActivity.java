@@ -38,7 +38,8 @@ public class ConferenceListActivity extends InjectableActionBarActivity implemen
     private ConferenceListAdapter mAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_conferences);
 
@@ -55,12 +56,14 @@ public class ConferenceListActivity extends InjectableActionBarActivity implemen
     }
 
     @Override
-    protected List<Object> getModules() {
+    protected List<Object> getModules()
+    {
         return Arrays.<Object>asList(new ConferenceListModule(this));
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
@@ -80,12 +83,12 @@ public class ConferenceListActivity extends InjectableActionBarActivity implemen
         mRecyclerView.setAdapter(mAdapter);
     }
 
-    private void launchConferenceSessionsListActivity(Long conferenceId, View imgView) {
+    private void launchConferenceSessionsListActivity(Long conferenceId, View imgView)
+    {
         Timber.d(String.format("Conference Selected: %s", conferenceId));
 
 
         Intent conferenceSessionListIntent = new Intent(this, ConferenceDetailActivity.class);
-        conferenceSessionListIntent.putExtra("id", conferenceId);
         String transitionName = getString(R.string.transition_conference_image);
         ActivityOptionsCompat options =
                 ActivityOptionsCompat.makeSceneTransitionAnimation(this,
