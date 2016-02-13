@@ -111,7 +111,10 @@ public class ConferenceSessionListActivityPresenter implements IConferenceSessio
     @Override
     public void onUnsubscribe()
     {
-        subscription.unsubscribe();
+        if( subscription != null )
+        {
+            subscription.unsubscribe();
+        }
     }
 
 
