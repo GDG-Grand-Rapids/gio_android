@@ -18,6 +18,7 @@ public class ConferenceSessionViewModel {
     private String room;
     private Date startDttm;
     private ConferenceSessionType type;
+    public boolean isFavorite;
 
     public Long getId() {
         return id;

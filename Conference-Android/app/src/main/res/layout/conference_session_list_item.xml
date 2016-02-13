@@ -11,22 +11,34 @@
         android:layout_width="@dimen/list_view_item_image_layout_width"
         android:layout_height="@dimen/list_view_item_image_layout_height"
         android:layout_marginTop="5dp"
+        android:layout_marginLeft="3dp"
         android:layout_alignParentLeft="true"
         tools:src="@drawable/icon_sessiontype_c"/>
 
     <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/conference_session_list_item_height"
         android:layout_marginTop="@dimen/list_view_item_text_marginTop"
         android:layout_marginLeft="@dimen/list_view_item_text_marginLeft"
-        android:layout_marginRight="10dp"
+        android:layout_marginRight="3dp"
         android:layout_toRightOf="@+id/iconType" >
+
+
+        <ImageView
+            android:id="@+id/favorite_icon"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/star_icon_filled"/>
 
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_toLeftOf="@id/favorite_icon"
             tools:text="Introduction and Keynote"
+            android:lines="1"
+            android:ellipsize="end"
             android:textStyle="bold"
             android:textSize="18sp"/>
 
@@ -37,7 +49,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/title"
             android:layout_marginTop="@dimen/list_view_item_text_padding"
-            android:layout_marginLeft="@dimen/list_view_item_text_padding"
             tools:text="9 - 11:30 a.m."
             android:textColor="@color/text_color_light"
             android:textSize="14sp"/>
@@ -48,7 +59,6 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/time"
             android:layout_marginTop="@dimen/list_view_item_text_padding"
-            android:layout_marginLeft="@dimen/list_view_item_text_padding"
             tools:text="Loosemore Auditorium"
             android:textColor="@color/text_color_light"
             android:textSize="14sp"/>

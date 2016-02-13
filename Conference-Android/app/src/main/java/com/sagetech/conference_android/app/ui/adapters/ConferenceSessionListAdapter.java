@@ -32,6 +32,8 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     private ConferenceSessionListOnClickListener onClickListener;
     private HashMap< Integer, String > sessionDateToHeaderMap;
 
+
+
     public interface ConferenceSessionListOnClickListener {
         void clicked(Long id);
     }
@@ -112,7 +114,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    public class ViewHolder extends RecyclerView.ViewHolder implements ConferenceSessionViewItem.OnConferenceSessionClickListener
     {
         private ConferenceSessionViewModel conferenceSessionViewModel;
         private ConferenceSessionViewItem itemView;
@@ -126,7 +128,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
                 itemView = (ConferenceSessionViewItem) v;
             }
 
-            itemView.setOnClickListener( this );
+            itemView.setListener( this );
 
         }
 
@@ -135,11 +137,23 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         {
             this.conferenceSessionViewModel = conferenceSessionViewModel;
 
-            itemView.setSessionInfo( conferenceSessionViewModel );
+            itemView.setSessionInfo(conferenceSessionViewModel);
+
+            itemView.setFavorite( conferenceSessionViewModel.isFavorite );
+        }
+
+        //ConferenceSessionViewItem.OnConferenceSessionClickListener
+        @Override
+        public void onFavoriteItemSelected()
+        {
+            conferenceSessionViewModel.isFavorite = !conferenceSessionViewModel.isFavorite;
+
+            itemView.setFavorite( conferenceSessionViewModel.isFavorite );
         }
 
         @Override
-        public void onClick(View v) {
+        public void onSessionClicked()
+        {
             onClickListener.clicked(conferenceSessionViewModel.getId());
         }
     }
