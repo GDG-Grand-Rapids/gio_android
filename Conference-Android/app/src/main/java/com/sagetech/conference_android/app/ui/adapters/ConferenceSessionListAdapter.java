@@ -4,6 +4,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
@@ -25,23 +27,40 @@ import butterknife.Bind;
  * Created by carlushenry on 3/5/15.
  */
 public class ConferenceSessionListAdapter extends RecyclerView.Adapter<ConferenceSessionListAdapter.ViewHolder>
-    implements StickyRecyclerHeadersAdapter<ConferenceSessionListAdapter.DayViewHolder>
+    implements StickyRecyclerHeadersAdapter<ConferenceSessionListAdapter.DayViewHolder>,
+        Filterable
 
 {
-    private final List<ConferenceSessionViewModel> conferenceSessions;
+    private List<ConferenceSessionViewModel> conferenceSessions;
     private ConferenceSessionListOnClickListener onClickListener;
     private HashMap< Integer, String > sessionDateToHeaderMap;
+    private boolean showFavoritesOnly;
 
 
 
-    public interface ConferenceSessionListOnClickListener {
-        void clicked(Long id);
+
+    public interface ConferenceSessionListOnClickListener
+    {
+        void onViewConferenceDetails( Long id );
     }
 
     public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions, ConferenceSessionListOnClickListener onClickListener)
     {
-        this.conferenceSessions = conferenceSessions;
+
         this.onClickListener = onClickListener;
+
+        //TODO - should tie this to a saved config setting
+        applyFavoritesFilter( false );
+    }
+
+    public void applyFavoritesFilter( boolean apply )
+    {
+        showFavoritesOnly = apply;
+    }
+
+    protected void initLists( List<ConferenceSessionViewModel> conferenceSessions )
+    {
+        this.conferenceSessions = conferenceSessions;
 
         sessionDateToHeaderMap = new HashMap<>();
 
@@ -58,6 +77,13 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         }
     }
 
+
+    @Override
+    public Filter getFilter()
+    {
+        return null;
+    }
+
     //RecyclerView.Adapter implementation
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
@@ -68,7 +94,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-        holder.setData(getItem(position));
+        holder.setData( getItem(position) );
     }
 
     @Override
@@ -154,7 +180,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         @Override
         public void onSessionClicked()
         {
-            onClickListener.clicked(conferenceSessionViewModel.getId());
+            onClickListener.onViewConferenceDetails( conferenceSessionViewModel.getId() );
         }
     }
 

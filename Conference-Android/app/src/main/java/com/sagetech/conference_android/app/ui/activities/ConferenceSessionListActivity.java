@@ -113,7 +113,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         outState.putString(ConferenceIntents.CONFERENCE_NAME_KEY ,
                 getIntent().getStringExtra( ConferenceIntents.CONFERENCE_NAME_KEY  ) );
 
-        outState.putLong( ConferenceIntents.CONFERENCE_ID_KEY, conferenceID );
+        outState.putLong(ConferenceIntents.CONFERENCE_ID_KEY, conferenceID);
 
         super.onSaveInstanceState(outState);
     }
@@ -165,19 +165,6 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-
-
-    @Override
-    public void clicked( Long sessionId )
-    {
-
-        Timber.d(String.format("Session Selected: %s", sessionId));
-
-        Intent eventDetailIntent = new Intent(this, ConferenceSessionDetailActivity.class);
-        eventDetailIntent.putExtra("id", sessionId);
-        startActivityForResult(eventDetailIntent, 1);
-    }
-
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
@@ -188,4 +175,21 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
             refreshData = false;
         }
     }
+
+
+    //
+    // ConferenceSessionListAdapter.ConferenceSessionListOnClickListener implementation
+    //
+    @Override
+    public void onViewConferenceDetails( Long sessionId )
+    {
+
+        Timber.d(String.format("Session Selected: %s", sessionId));
+
+        Intent eventDetailIntent = new Intent(this, ConferenceSessionDetailActivity.class);
+        eventDetailIntent.putExtra("id", sessionId);
+        startActivityForResult(eventDetailIntent, 1);
+    }
+
+
 }

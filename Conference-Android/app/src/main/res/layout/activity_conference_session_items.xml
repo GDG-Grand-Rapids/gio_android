@@ -5,15 +5,31 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/txtConferenceName"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/purple_dark"
-        android:padding="@dimen/conference_detail_conf_name_padding"
-        tools:text="Google I/O"
-        android:textColor="@color/white" />
+        android:layout_height="40dp"
+        android:background="@color/purple_dark">
 
+        <TextView
+            android:id="@+id/txtConferenceName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="3dp"
+            tools:text="Google I/O"
+            android:textColor="@color/white" />
+
+        <ImageView
+            android:id="@+id/favorites_filter"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="3dp"
+            android:layout_centerVertical="true"
+            android:src="@drawable/star_icon_filled"
+            />
+
+    </RelativeLayout>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/confSessionView"
