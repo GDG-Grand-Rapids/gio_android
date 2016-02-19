@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 import com.sagetech.conference_android.app.R;
 
@@ -15,18 +16,28 @@ import rx.Subscription;
 import rx.android.app.AppObservable;
 import timber.log.Timber;
 
-public class SplashActivity extends ActionBarActivity {
+/**
+ * A splash screen activity that is displayed on app start for
+ * a brief time.
+ */
+public class SplashActivity extends AppCompatActivity
+{
 
     private Subscription subscription;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_splash);
 
-        final ActionBar actionBar = getSupportActionBar();
-        actionBar.hide();
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
 
         subscription = AppObservable.bindActivity(this, Observable.just(1))
                 .delay(3, TimeUnit.SECONDS)
@@ -35,7 +46,6 @@ public class SplashActivity extends ActionBarActivity {
                     public void onCompleted() {
                         Timber.i("onCompleted");
                         Intent intent = new Intent(getApplicationContext(), ConferenceDetailActivity.class);
-                        intent.putExtra("id", Long.valueOf(getString(R.string.google_io_conference_id)));
                         startActivity(intent);
                         finish();
                     }
@@ -50,13 +60,13 @@ public class SplashActivity extends ActionBarActivity {
                         Timber.i("On Next");
                     }
                 });
-        Timber.i("done!!!");
-
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
+    protected void onPause()
+    {
+        super.onPause();
+
         subscription.unsubscribe();
     }
 

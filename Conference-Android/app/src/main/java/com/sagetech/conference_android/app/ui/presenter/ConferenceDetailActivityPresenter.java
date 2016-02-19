@@ -20,7 +20,7 @@ public class ConferenceDetailActivityPresenter implements IConferenceDetailActiv
     }
 
     @Override
-    public void initialize(Long conferenceId) {
+    public void initialize(long conferenceId) {
 
         controller.getConferenceDataById(conferenceId)
                 .observeOn(AndroidSchedulers.mainThread())
