@@ -54,8 +54,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     //need to keep these guys as class variables so they can be removed when needed
     private StickyRecyclerHeadersDecoration headersDecor;
     private SimpleDividerLineDecorator dividerLineDecorator;
-
-
+    
     private boolean refreshData;
     private boolean filterApplied;
 
@@ -101,6 +100,16 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         //mark data as needing refresh in case the app goes in the background
         refreshData = true;
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState)
+    {
+        super.onRestoreInstanceState(savedInstanceState);
+
+        //if the activity was ever killed make sure we refresh the data on start
+        presenter.initialize(conferenceID);
+
     }
 
     @Override
