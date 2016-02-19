@@ -1,15 +1,14 @@
 package com.sagetech.conference_android.app.ui.activities;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
+import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.sagetech.conference_android.app.Config;
 import com.sagetech.conference_android.app.R;
 import com.sagetech.conference_android.app.ui.Views.SimpleDividerLineDecorator;
 import com.sagetech.conference_android.app.ui.adapters.ConferenceSessionListAdapter;
@@ -18,6 +17,7 @@ import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionListPr
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
 import com.sagetech.conference_android.app.util.ConferenceIntents;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionListModule;
+import com.squareup.picasso.Picasso;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.Arrays;
@@ -46,6 +46,11 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
     @Bind(R.id.txtConferenceName)
     TextView txtConferenceName;
+
+    @Bind(R.id.favorites_filter)
+    ImageView favoriteFilter;
+
+    private final String FILTER_APPLIED_KEY = "com.sagetech.conference_android.filterApplied";
 
     private long conferenceID;
 
@@ -76,12 +81,15 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         {
             txtConferenceName.setText(getIntent().getStringExtra( ConferenceIntents.CONFERENCE_NAME_KEY ) );
             conferenceID = getIntent().getLongExtra( ConferenceIntents.CONFERENCE_ID_KEY, 0 );
+            setFavoritesFilterImage(false);
             filterApplied = false;
         }
         else
         {
             txtConferenceName.setText( savedInstanceState.getString( ConferenceIntents.CONFERENCE_NAME_KEY ) );
             conferenceID = savedInstanceState.getLong(ConferenceIntents.CONFERENCE_ID_KEY, 0);
+            filterApplied = savedInstanceState.getBoolean(FILTER_APPLIED_KEY);
+            setFavoritesFilterImage(filterApplied);
         }
 
         //assume we are going to refresh the data
@@ -129,6 +137,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         outState.putLong(ConferenceIntents.CONFERENCE_ID_KEY, conferenceID);
 
+        outState.putBoolean(FILTER_APPLIED_KEY, filterApplied);
+
         super.onSaveInstanceState(outState);
     }
 
@@ -142,7 +152,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
     {
-        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
+        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, filterApplied);
         mRecyclerView.setAdapter(mAdapter);
 
         //ensure the old decors are removed (if there are any)
@@ -195,7 +205,20 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     {
         filterApplied = !filterApplied;
 
-        mAdapter.applyFavoritesFilter( filterApplied );
+        setFavoritesFilterImage(filterApplied);
+        mAdapter.applyFavoritesFilter(filterApplied);
+    }
+
+    private void setFavoritesFilterImage(boolean apply)
+    {
+        if( apply )
+        {
+            Picasso.with( this ).load( R.drawable.star_icon_filled ).into( favoriteFilter );
+        }
+        else
+        {
+            Picasso.with( this ).load( R.drawable.star_icon_unfilled ).into( favoriteFilter );
+        }
     }
 
 

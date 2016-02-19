@@ -45,12 +45,19 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         void onViewConferenceDetails( Long id );
     }
 
-    public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions, ConferenceSessionListOnClickListener onClickListener)
+    public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions,
+                                        ConferenceSessionListOnClickListener onClickListener,
+                                        boolean applyFilter )
     {
 
         this.onClickListener = onClickListener;
 
         initLists(conferenceSessions);
+
+        if( applyFilter )
+        {
+            applyFavoritesFilter(applyFilter);
+        }
 
     }
 
