@@ -37,7 +37,6 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     private List<ConferenceSessionViewModel> conferenceSessions;
     private ConferenceSessionListOnClickListener onClickListener;
     private HashMap< Integer, String > sessionDateToHeaderMap;
-    private boolean showFavoritesOnly;
     private ConferenceSessionsFilter conferenceSessionsFilter;
 
 
@@ -51,24 +50,19 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
         this.onClickListener = onClickListener;
 
-        initLists( conferenceSessions );
+        initLists(conferenceSessions);
 
-
-        //TODO - should tie this to a saved config setting
-        applyFavoritesFilter( false );
     }
 
     public void applyFavoritesFilter( boolean apply )
     {
-        showFavoritesOnly = apply;
-
         if( apply )
         {
-            getFilter().filter("a");
+            getFilter().filter( ConferenceSessionsFilter.FAVORITES_FILTER );
         }
         else
         {
-            getFilter().filter( null );
+            getFilter().filter( ConferenceSessionsFilter.CLEAR_FILTER );
         }
     }
 

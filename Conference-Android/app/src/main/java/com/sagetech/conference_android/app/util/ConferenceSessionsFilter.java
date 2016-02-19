@@ -19,6 +19,9 @@ public class ConferenceSessionsFilter extends Filter
         void onFilterCleared( List<ConferenceSessionViewModel> filterResults );
     }
 
+    public static final String FAVORITES_FILTER = "favorites";
+    public static final String CLEAR_FILTER = null;
+
     private List<ConferenceSessionViewModel> conferenceSessions;
     private ConferenceSessionFilterListener listener;
 

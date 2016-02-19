@@ -57,6 +57,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
 
     private boolean refreshData;
+    private boolean filterApplied;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -76,6 +77,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         {
             txtConferenceName.setText(getIntent().getStringExtra( ConferenceIntents.CONFERENCE_NAME_KEY ) );
             conferenceID = getIntent().getLongExtra( ConferenceIntents.CONFERENCE_ID_KEY, 0 );
+            filterApplied = false;
         }
         else
         {
@@ -182,7 +184,9 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @OnClick( R.id.favorites_filter )
     public void favoritesFilterClicked()
     {
-        mAdapter.applyFavoritesFilter( true );
+        filterApplied = !filterApplied;
+
+        mAdapter.applyFavoritesFilter( filterApplied );
     }
 
 
