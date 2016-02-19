@@ -56,7 +56,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
         if( applyFilter )
         {
-            applyFavoritesFilter(applyFilter);
+            applyFavoritesFilter( true );
         }
 
     }
@@ -101,6 +101,8 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         initLists( filterResults );
         notifyDataSetChanged();
 
+        Timber.d( "Filter applied" );
+
     }
 
     @Override
@@ -108,14 +110,14 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     {
         initLists( filterResults );
         notifyDataSetChanged();
+
+        Timber.d("Filter cleared");
     }
 
 
     @Override
     public Filter getFilter()
     {
-        Timber.d("getFilter called");
-
         if( conferenceSessionsFilter == null )
         {
             conferenceSessionsFilter = new ConferenceSessionsFilter( conferenceSessions );
