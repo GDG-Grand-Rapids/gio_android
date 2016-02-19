@@ -27,6 +27,7 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -47,6 +48,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     TextView txtConferenceName;
 
     private long conferenceID;
+
+    private ConferenceSessionListAdapter mAdapter;
 
     //need to keep these guys as class variables so they can be removed when needed
     private StickyRecyclerHeadersDecoration headersDecor;
@@ -128,7 +131,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
     {
-        ConferenceSessionListAdapter mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
+        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this);
         mRecyclerView.setAdapter(mAdapter);
 
         //ensure the old decors are removed (if there are any)
@@ -174,6 +177,12 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         {
             refreshData = false;
         }
+    }
+
+    @OnClick( R.id.favorites_filter )
+    public void favoritesFilterClicked()
+    {
+        mAdapter.applyFavoritesFilter( true );
     }
 
 

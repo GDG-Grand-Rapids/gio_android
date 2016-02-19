@@ -15,8 +15,8 @@ public class ConferenceSessionsFilter extends Filter
 
     public interface ConferenceSessionFilterListener
     {
-        void onFilterApplied( FilterResults filterResults );
-        void onFilterCleared( FilterResults filterResults );
+        void onFilterApplied( List<ConferenceSessionViewModel> filterResults );
+        void onFilterCleared( List<ConferenceSessionViewModel> filterResults );
     }
 
     private List<ConferenceSessionViewModel> conferenceSessions;
@@ -81,11 +81,11 @@ public class ConferenceSessionsFilter extends Filter
         {
             if( constraint == null || constraint.length() == 0 )
             {
-                listener.onFilterCleared( results );
+                listener.onFilterCleared( (List<ConferenceSessionViewModel>)results.values );
             }
             else
             {
-                listener.onFilterApplied( results );
+                listener.onFilterApplied( (List<ConferenceSessionViewModel>)results.values );
             }
         }
     }

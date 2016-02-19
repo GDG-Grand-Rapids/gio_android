@@ -12,6 +12,7 @@ import com.sagetech.conference_android.app.R;
 import com.sagetech.conference_android.app.ui.Views.ConferenceSessionListItemHeader;
 import com.sagetech.conference_android.app.ui.Views.ConferenceSessionViewItem;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
+import com.sagetech.conference_android.app.util.ConferenceSessionsFilter;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.util.ArrayList;
@@ -22,21 +23,22 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import timber.log.Timber;
 
 /**
  * Created by carlushenry on 3/5/15.
  */
 public class ConferenceSessionListAdapter extends RecyclerView.Adapter<ConferenceSessionListAdapter.ViewHolder>
     implements StickyRecyclerHeadersAdapter<ConferenceSessionListAdapter.DayViewHolder>,
-        Filterable
+        Filterable,
+        ConferenceSessionsFilter.ConferenceSessionFilterListener
 
 {
     private List<ConferenceSessionViewModel> conferenceSessions;
     private ConferenceSessionListOnClickListener onClickListener;
     private HashMap< Integer, String > sessionDateToHeaderMap;
     private boolean showFavoritesOnly;
-
-
+    private ConferenceSessionsFilter conferenceSessionsFilter;
 
 
     public interface ConferenceSessionListOnClickListener
@@ -49,6 +51,9 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
         this.onClickListener = onClickListener;
 
+        initLists( conferenceSessions );
+
+
         //TODO - should tie this to a saved config setting
         applyFavoritesFilter( false );
     }
@@ -56,6 +61,15 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     public void applyFavoritesFilter( boolean apply )
     {
         showFavoritesOnly = apply;
+
+        if( apply )
+        {
+            getFilter().filter("a");
+        }
+        else
+        {
+            getFilter().filter( null );
+        }
     }
 
     protected void initLists( List<ConferenceSessionViewModel> conferenceSessions )
@@ -77,11 +91,37 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         }
     }
 
+    //
+    // ConferenceSessionsFilter.ConferenceSessionFilterListener implementation
+    //
+    @Override
+    public void onFilterApplied(List<ConferenceSessionViewModel> filterResults )
+    {
+        initLists( filterResults );
+        notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onFilterCleared(List<ConferenceSessionViewModel> filterResults )
+    {
+        initLists( filterResults );
+        notifyDataSetChanged();
+    }
+
 
     @Override
     public Filter getFilter()
     {
-        return null;
+        Timber.d("getFilter called");
+
+        if( conferenceSessionsFilter == null )
+        {
+            conferenceSessionsFilter = new ConferenceSessionsFilter( conferenceSessions );
+            conferenceSessionsFilter.setListener( this );
+        }
+
+        return conferenceSessionsFilter;
     }
 
     //RecyclerView.Adapter implementation
@@ -109,7 +149,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     public long getHeaderId(int position)
     {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime( getItem(position).getStartDttm() );
+        calendar.setTime(getItem(position).getStartDttm() );
 
         return calendar.get( Calendar.DAY_OF_YEAR );
     }
