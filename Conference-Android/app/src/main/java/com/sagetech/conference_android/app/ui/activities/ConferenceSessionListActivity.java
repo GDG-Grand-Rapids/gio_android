@@ -51,6 +51,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     ImageView favoriteFilter;
 
     private final String FILTER_APPLIED_KEY = "com.sagetech.conference_android.filterApplied";
+    private final int SESSION_DETAIL_REQUEST_CODE = 1;
 
     private long conferenceID;
 
@@ -81,15 +82,19 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         {
             txtConferenceName.setText(getIntent().getStringExtra( ConferenceIntents.CONFERENCE_NAME_KEY ) );
             conferenceID = getIntent().getLongExtra( ConferenceIntents.CONFERENCE_ID_KEY, 0 );
-            setFavoritesFilterImage(false);
             filterApplied = false;
         }
         else
         {
             txtConferenceName.setText( savedInstanceState.getString( ConferenceIntents.CONFERENCE_NAME_KEY ) );
             conferenceID = savedInstanceState.getLong(ConferenceIntents.CONFERENCE_ID_KEY, 0);
-            filterApplied = savedInstanceState.getBoolean(FILTER_APPLIED_KEY);
-            setFavoritesFilterImage(filterApplied);
+
+            //TODO - remove when saving data is implemented
+            filterApplied = false;
+
+            //TODO - implement when saving this data is implemented
+            //filterApplied = savedInstanceState.getBoolean(FILTER_APPLIED_KEY);
+            //setFilterAppliedIcon(filterApplied);
         }
 
         //assume we are going to refresh the data
@@ -152,6 +157,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
     {
+        setFilterAppliedIcon(true);
         mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, filterApplied);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -194,7 +200,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if( requestCode == 1 && resultCode == RESULT_OK )
+        if( requestCode == SESSION_DETAIL_REQUEST_CODE && resultCode == RESULT_OK )
         {
             refreshData = false;
         }
@@ -205,11 +211,11 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     {
         filterApplied = !filterApplied;
 
-        setFavoritesFilterImage(filterApplied);
+        setFilterAppliedIcon(filterApplied);
         mAdapter.applyFavoritesFilter(filterApplied);
     }
 
-    private void setFavoritesFilterImage(boolean apply)
+    private void setFilterAppliedIcon(boolean apply)
     {
         if( apply )
         {
@@ -233,7 +239,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         Intent eventDetailIntent = new Intent(this, ConferenceSessionDetailActivity.class);
         eventDetailIntent.putExtra("id", sessionId);
-        startActivityForResult(eventDetailIntent, 1);
+        startActivityForResult(eventDetailIntent, SESSION_DETAIL_REQUEST_CODE );
     }
 
 
