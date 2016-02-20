@@ -10,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
+import com.sagetech.conference_android.app.ui.Views.FavoriteFilterView;
 import com.sagetech.conference_android.app.ui.Views.SimpleDividerLineDecorator;
 import com.sagetech.conference_android.app.ui.adapters.ConferenceSessionListAdapter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionActivity;
@@ -35,7 +36,8 @@ import timber.log.Timber;
  */
 public class ConferenceSessionListActivity extends InjectableActionBarActivity
         implements IConferenceSessionActivity,
-        ConferenceSessionListAdapter.ConferenceSessionListOnClickListener
+        ConferenceSessionListAdapter.ConferenceSessionListOnClickListener,
+        FavoriteFilterView.FavoritesFilterViewListener
 {
 
     @Inject
@@ -48,7 +50,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     TextView txtConferenceName;
 
     @Bind(R.id.favorites_filter)
-    ImageView favoriteFilter;
+    FavoriteFilterView favoriteFilter;
 
     private final String FILTER_APPLIED_KEY = "com.sagetech.conference_android.filterApplied";
     private final int SESSION_DETAIL_REQUEST_CODE = 1;
@@ -86,7 +88,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         }
         else
         {
-            txtConferenceName.setText( savedInstanceState.getString( ConferenceIntents.CONFERENCE_NAME_KEY ) );
+            txtConferenceName.setText(savedInstanceState.getString(ConferenceIntents.CONFERENCE_NAME_KEY));
             conferenceID = savedInstanceState.getLong(ConferenceIntents.CONFERENCE_ID_KEY, 0);
 
             //TODO - remove when saving data is implemented
@@ -96,6 +98,17 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
             //filterApplied = savedInstanceState.getBoolean(FILTER_APPLIED_KEY);
             //setFilterAppliedIcon(filterApplied);
         }
+
+        //make sure the filter view is in the correct state and the listener is setup
+        if( filterApplied )
+        {
+            favoriteFilter.setFilterEnabled();
+        }
+        else
+        {
+            favoriteFilter.clearFilter();
+        }
+        favoriteFilter.setListener(this);
 
         //assume we are going to refresh the data
         refreshData = true;
@@ -137,8 +150,8 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     protected void onSaveInstanceState(Bundle outState)
     {
-        outState.putString(ConferenceIntents.CONFERENCE_NAME_KEY ,
-                getIntent().getStringExtra( ConferenceIntents.CONFERENCE_NAME_KEY  ) );
+        outState.putString(ConferenceIntents.CONFERENCE_NAME_KEY,
+                getIntent().getStringExtra(ConferenceIntents.CONFERENCE_NAME_KEY));
 
         outState.putLong(ConferenceIntents.CONFERENCE_ID_KEY, conferenceID);
 
@@ -157,8 +170,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
     {
-        setFilterAppliedIcon(true);
-        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, filterApplied);
+        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, favoriteFilter.filterEnabled() );
         mRecyclerView.setAdapter(mAdapter);
 
         //ensure the old decors are removed (if there are any)
@@ -206,27 +218,6 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         }
     }
 
-    @OnClick( R.id.favorites_filter )
-    public void favoritesFilterClicked()
-    {
-        filterApplied = !filterApplied;
-
-        setFilterAppliedIcon(filterApplied);
-        mAdapter.applyFavoritesFilter(filterApplied);
-    }
-
-    private void setFilterAppliedIcon(boolean apply)
-    {
-        if( apply )
-        {
-            Picasso.with( this ).load( R.drawable.star_icon_filled ).into( favoriteFilter );
-        }
-        else
-        {
-            Picasso.with( this ).load( R.drawable.star_icon_unfilled ).into( favoriteFilter );
-        }
-    }
-
 
     //
     // ConferenceSessionListAdapter.ConferenceSessionListOnClickListener implementation
@@ -243,4 +234,25 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     }
 
 
+    //
+    // FavoriteFilterView.FavoritesFilterViewListener implementation
+    //
+
+    @Override
+    public void showFavoritesOnly()
+    {
+        if( mAdapter != null )
+        {
+            mAdapter.applyFavoritesFilter( true );
+        }
+    }
+
+    @Override
+    public void showAll()
+    {
+        if( mAdapter != null )
+        {
+            mAdapter.applyFavoritesFilter( false );
+        }
+    }
 }

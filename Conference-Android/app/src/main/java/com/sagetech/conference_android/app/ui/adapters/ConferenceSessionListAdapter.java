@@ -101,8 +101,6 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         initLists( filterResults );
         notifyDataSetChanged();
 
-        Timber.d( "Filter applied" );
-
     }
 
     @Override
@@ -110,8 +108,6 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     {
         initLists( filterResults );
         notifyDataSetChanged();
-
-        Timber.d("Filter cleared");
     }
 
 
