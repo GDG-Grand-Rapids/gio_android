@@ -20,8 +20,7 @@ public class FavoriteFilterView extends ImageView implements View.OnClickListene
 
     public interface FavoritesFilterViewListener
     {
-        void showFavoritesOnly();
-        void showAll();
+        void enabledFilter( boolean enabled );
     }
 
     public FavoriteFilterView(Context context, AttributeSet attrs)
@@ -35,7 +34,7 @@ public class FavoriteFilterView extends ImageView implements View.OnClickListene
     {
         super(context, attrs, defStyleAttr);
 
-        init( context, attrs );
+        init(context, attrs);
     }
 
     private void init( Context context, AttributeSet attrs )
@@ -63,7 +62,7 @@ public class FavoriteFilterView extends ImageView implements View.OnClickListene
             setImageResource(R.drawable.star_icon_unfilled);
         }
 
-        setOnClickListener( this );
+        setOnClickListener(this);
     }
 
     public void setListener( FavoritesFilterViewListener listener )
@@ -76,25 +75,35 @@ public class FavoriteFilterView extends ImageView implements View.OnClickListene
         return filterEnabled;
     }
 
-    public void setFilterEnabled()
+    public void showFilterEnabled( boolean enabled )
     {
-        setImageResource(R.drawable.star_icon_filled);
+
+
+        if( enabled )
+        {
+            setImageResource(R.drawable.star_icon_filled);
+        }
+        else
+        {
+            setImageResource(R.drawable.star_icon_unfilled);
+        }
 
         if( listener != null )
         {
-            listener.showFavoritesOnly();
+            listener.enabledFilter( enabled );
         }
 
     }
 
-    public void clearFilter()
+    public void hide()
     {
-        setImageResource(R.drawable.star_icon_unfilled);
+        setVisibility( INVISIBLE );
+    }
 
-        if( listener != null )
-        {
-            listener.showAll();
-        }
+    public void show()
+    {
+        //always make sure the indicator is visible
+        setVisibility( VISIBLE );
     }
 
     @Override
@@ -102,14 +111,6 @@ public class FavoriteFilterView extends ImageView implements View.OnClickListene
     {
         filterEnabled = !filterEnabled;
 
-        if( filterEnabled )
-        {
-            setFilterEnabled();
-        }
-        else
-        {
-            clearFilter();
-        }
-
+        showFilterEnabled( filterEnabled );
     }
 }

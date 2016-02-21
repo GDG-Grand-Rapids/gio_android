@@ -6,7 +6,6 @@ import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.MenuItem;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
@@ -18,7 +17,6 @@ import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionListPr
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
 import com.sagetech.conference_android.app.util.ConferenceIntents;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionListModule;
-import com.squareup.picasso.Picasso;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
 import java.util.Arrays;
@@ -28,7 +26,6 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import butterknife.OnClick;
 import timber.log.Timber;
 
 /**
@@ -50,7 +47,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     TextView txtConferenceName;
 
     @Bind(R.id.favorites_filter)
-    FavoriteFilterView favoriteFilter;
+    FavoriteFilterView favoriteFilterView;
 
     private final String FILTER_APPLIED_KEY = "com.sagetech.conference_android.filterApplied";
     private final int SESSION_DETAIL_REQUEST_CODE = 1;
@@ -99,16 +96,9 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
             //setFilterAppliedIcon(filterApplied);
         }
 
-        //make sure the filter view is in the correct state and the listener is setup
-        if( filterApplied )
-        {
-            favoriteFilter.setFilterEnabled();
-        }
-        else
-        {
-            favoriteFilter.clearFilter();
-        }
-        favoriteFilter.setListener(this);
+        //make sure the filter view is hidden until data is obtained
+        favoriteFilterView.hide();
+        favoriteFilterView.setListener(this);
 
         //assume we are going to refresh the data
         refreshData = true;
@@ -170,7 +160,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
     {
-        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, favoriteFilter.filterEnabled() );
+        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, favoriteFilterView.filterEnabled() );
         mRecyclerView.setAdapter(mAdapter);
 
         //ensure the old decors are removed (if there are any)
@@ -191,6 +181,9 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         mRecyclerView.addItemDecoration( dividerLineDecorator );
 
         presenter.onUnsubscribe();
+
+        //now that we have data make sure the filter can be applied/removed
+        favoriteFilterView.show();
 
     }
 
@@ -238,21 +231,13 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     // FavoriteFilterView.FavoritesFilterViewListener implementation
     //
 
-    @Override
-    public void showFavoritesOnly()
-    {
-        if( mAdapter != null )
-        {
-            mAdapter.applyFavoritesFilter( true );
-        }
-    }
 
     @Override
-    public void showAll()
+    public void enabledFilter(boolean enabled)
     {
-        if( mAdapter != null )
+        if (mAdapter != null)
         {
-            mAdapter.applyFavoritesFilter( false );
+            mAdapter.applyFavoritesFilter(enabled);
         }
     }
 }
