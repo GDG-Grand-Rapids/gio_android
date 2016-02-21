@@ -4,12 +4,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
 import com.sagetech.conference_android.app.ui.Views.ConferenceSessionListItemHeader;
 import com.sagetech.conference_android.app.ui.Views.ConferenceSessionViewItem;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
+import com.sagetech.conference_android.app.util.ConferenceSessionsFilter;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersAdapter;
 
 import java.util.ArrayList;
@@ -20,26 +23,59 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
+import timber.log.Timber;
 
 /**
  * Created by carlushenry on 3/5/15.
  */
 public class ConferenceSessionListAdapter extends RecyclerView.Adapter<ConferenceSessionListAdapter.ViewHolder>
-    implements StickyRecyclerHeadersAdapter<ConferenceSessionListAdapter.DayViewHolder>
+    implements StickyRecyclerHeadersAdapter<ConferenceSessionListAdapter.DayViewHolder>,
+        Filterable,
+        ConferenceSessionsFilter.ConferenceSessionFilterListener
 
 {
-    private final List<ConferenceSessionViewModel> conferenceSessions;
+    private List<ConferenceSessionViewModel> conferenceSessions;
     private ConferenceSessionListOnClickListener onClickListener;
     private HashMap< Integer, String > sessionDateToHeaderMap;
+    private ConferenceSessionsFilter conferenceSessionsFilter;
 
-    public interface ConferenceSessionListOnClickListener {
-        void clicked(Long id);
+
+    public interface ConferenceSessionListOnClickListener
+    {
+        void onViewConferenceDetails( Long id );
     }
 
-    public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions, ConferenceSessionListOnClickListener onClickListener)
+    public ConferenceSessionListAdapter(List<ConferenceSessionViewModel> conferenceSessions,
+                                        ConferenceSessionListOnClickListener onClickListener,
+                                        boolean applyFilter )
+    {
+
+        this.onClickListener = onClickListener;
+
+        initLists(conferenceSessions);
+
+        if( applyFilter )
+        {
+            applyFavoritesFilter( true );
+        }
+
+    }
+
+    public void applyFavoritesFilter( boolean apply )
+    {
+        if( apply )
+        {
+            getFilter().filter( ConferenceSessionsFilter.FAVORITES_FILTER );
+        }
+        else
+        {
+            getFilter().filter( ConferenceSessionsFilter.CLEAR_FILTER );
+        }
+    }
+
+    protected void initLists( List<ConferenceSessionViewModel> conferenceSessions )
     {
         this.conferenceSessions = conferenceSessions;
-        this.onClickListener = onClickListener;
 
         sessionDateToHeaderMap = new HashMap<>();
 
@@ -56,6 +92,37 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         }
     }
 
+    //
+    // ConferenceSessionsFilter.ConferenceSessionFilterListener implementation
+    //
+    @Override
+    public void onFilterApplied(List<ConferenceSessionViewModel> filterResults )
+    {
+        initLists( filterResults );
+        notifyDataSetChanged();
+
+    }
+
+    @Override
+    public void onFilterCleared(List<ConferenceSessionViewModel> filterResults )
+    {
+        initLists( filterResults );
+        notifyDataSetChanged();
+    }
+
+
+    @Override
+    public Filter getFilter()
+    {
+        if( conferenceSessionsFilter == null )
+        {
+            conferenceSessionsFilter = new ConferenceSessionsFilter( conferenceSessions );
+            conferenceSessionsFilter.setListener( this );
+        }
+
+        return conferenceSessionsFilter;
+    }
+
     //RecyclerView.Adapter implementation
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
@@ -66,7 +133,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     @Override
     public void onBindViewHolder(ViewHolder holder, int position)
     {
-        holder.setData(getItem(position));
+        holder.setData( getItem(position) );
     }
 
     @Override
@@ -81,7 +148,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
     public long getHeaderId(int position)
     {
         Calendar calendar = Calendar.getInstance();
-        calendar.setTime( getItem(position).getStartDttm() );
+        calendar.setTime(getItem(position).getStartDttm() );
 
         return calendar.get( Calendar.DAY_OF_YEAR );
     }
@@ -112,7 +179,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
 
 
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener
+    public class ViewHolder extends RecyclerView.ViewHolder implements ConferenceSessionViewItem.OnConferenceSessionClickListener
     {
         private ConferenceSessionViewModel conferenceSessionViewModel;
         private ConferenceSessionViewItem itemView;
@@ -126,7 +193,7 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
                 itemView = (ConferenceSessionViewItem) v;
             }
 
-            itemView.setOnClickListener( this );
+            itemView.setListener( this );
 
         }
 
@@ -135,12 +202,24 @@ public class ConferenceSessionListAdapter extends RecyclerView.Adapter<Conferenc
         {
             this.conferenceSessionViewModel = conferenceSessionViewModel;
 
-            itemView.setSessionInfo( conferenceSessionViewModel );
+            itemView.setSessionInfo(conferenceSessionViewModel);
+
+            itemView.setFavorite( conferenceSessionViewModel.isFavorite );
+        }
+
+        //ConferenceSessionViewItem.OnConferenceSessionClickListener
+        @Override
+        public void onFavoriteItemSelected()
+        {
+            conferenceSessionViewModel.isFavorite = !conferenceSessionViewModel.isFavorite;
+
+            itemView.setFavorite( conferenceSessionViewModel.isFavorite );
         }
 
         @Override
-        public void onClick(View v) {
-            onClickListener.clicked(conferenceSessionViewModel.getId());
+        public void onSessionClicked()
+        {
+            onClickListener.onViewConferenceDetails( conferenceSessionViewModel.getId() );
         }
     }
 
