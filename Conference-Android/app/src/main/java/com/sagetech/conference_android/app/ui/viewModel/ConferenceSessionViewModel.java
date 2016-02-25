@@ -9,7 +9,8 @@ import java.util.Locale;
 /**
  * Created by carlushenry on 3/15/15.
  */
-public class ConferenceSessionViewModel {
+public class ConferenceSessionViewModel
+{
     private static final SimpleDateFormat DAY_FORMATTER = new SimpleDateFormat("EEEE, MMMM dd, yyyy", Locale.US);
     private static final SimpleDateFormat TIME_FORMATTER = new SimpleDateFormat("h:mm a", Locale.US);
 
@@ -18,6 +19,7 @@ public class ConferenceSessionViewModel {
     private String room;
     private Date startDttm;
     private ConferenceSessionType type;
+    public boolean isFavorite;
 
     public Long getId() {
         return id;
