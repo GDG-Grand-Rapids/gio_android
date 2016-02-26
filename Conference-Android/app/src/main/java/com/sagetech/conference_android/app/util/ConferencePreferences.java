@@ -10,9 +10,7 @@ import dagger.Module;
 
 
 @Module(
-        injects = {
-                ConferencePreferences.class
-        }, library = true
+        library = true
 )
 /**
  * Created by willmetz on 2/24/16.
