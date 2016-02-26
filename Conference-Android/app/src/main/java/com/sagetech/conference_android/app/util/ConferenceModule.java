@@ -49,6 +49,7 @@ public final class ConferenceModule
 
     @Provides
     @Singleton
+    @ForApplication
     Context provideContext( Application application )
     {
         return application.getApplicationContext();
@@ -86,7 +87,7 @@ public final class ConferenceModule
 
     @Provides
     @Singleton
-    ConferencePreferences provideConferencePreferences( Context context )
+    ConferencePreferences provideConferencePreferences( @ForApplication Context context )
     {
         return new ConferencePreferences( context );
     }

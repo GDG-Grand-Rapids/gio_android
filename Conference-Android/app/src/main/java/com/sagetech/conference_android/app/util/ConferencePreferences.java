@@ -19,7 +19,7 @@ public class ConferencePreferences
 {
     private SharedPreferences sharedPreferences;
 
-    public ConferencePreferences( Context context )
+    public ConferencePreferences( @ForApplication Context context )
     {
         sharedPreferences = context.getSharedPreferences(Config.CONFERENCE_SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
     }
