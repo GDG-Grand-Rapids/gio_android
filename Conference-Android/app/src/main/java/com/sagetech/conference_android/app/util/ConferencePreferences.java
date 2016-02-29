@@ -13,7 +13,8 @@ import dagger.Module;
         library = true
 )
 /**
- * Created by willmetz on 2/24/16.
+ * A custom class to add methods that allow saving of data to the
+ * {@link SharedPreferences} settings.
  */
 public class ConferencePreferences
 {
