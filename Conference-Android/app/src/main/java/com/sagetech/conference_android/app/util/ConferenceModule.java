@@ -2,6 +2,7 @@ package com.sagetech.conference_android.app.util;
 
 
 import android.app.Application;
+import android.content.Context;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,7 +32,8 @@ import timber.log.Timber;
                 ConferenceApplication.class
         }, library = true
 )
-public final class ConferenceModule {
+public final class ConferenceModule
+{
 
     private final ConferenceApplication app;
 
@@ -47,7 +49,16 @@ public final class ConferenceModule {
 
     @Provides
     @Singleton
-    ConferenceApi provideConferenceApi() {
+    @ForApplication
+    Context provideContext( Application application )
+    {
+        return application.getApplicationContext();
+    }
+
+    @Provides
+    @Singleton
+    ConferenceApi provideConferenceApi()
+    {
         Gson gson = new GsonBuilder()
                 .registerTypeAdapter(Date.class, new JsonDeserializer<Date>() {
 
@@ -64,6 +75,7 @@ public final class ConferenceModule {
             }
 
         }).setEndpoint(Config.API_BASE_URL).setConverter(new GsonConverter(gson)).build();
+
         return restAdapter.create(ConferenceApi.class);
     }
 
@@ -72,4 +84,12 @@ public final class ConferenceModule {
     ConferenceController provideConferenceController(ConferenceApi conferenceApi) {
         return new ConferenceController(conferenceApi);
     }
+
+    @Provides
+    @Singleton
+    ConferencePreferences provideConferencePreferences( @ForApplication Context context )
+    {
+        return new ConferencePreferences( context );
+    }
+
 }

@@ -1,12 +1,9 @@
 package com.sagetech.conference_android.app.ui.activities;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 
 import com.sagetech.conference_android.app.ConferenceApplication;
-import com.sagetech.conference_android.app.R;
 
 import java.util.List;
 

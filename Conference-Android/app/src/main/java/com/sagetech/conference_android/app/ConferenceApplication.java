@@ -13,7 +13,8 @@ import static timber.log.Timber.DebugTree;
 /**
  * Created by carlushenry on 5/28/14.
  */
-public class ConferenceApplication extends Application {
+public class ConferenceApplication extends Application
+{
     private ObjectGraph objectGraph;
 
     @Override
@@ -36,10 +37,6 @@ public class ConferenceApplication extends Application {
 
     public void inject(Object o) {
         objectGraph.inject(o);
-    }
-
-    public static ConferenceApplication get(Context context) {
-        return (ConferenceApplication) context.getApplicationContext();
     }
 
     public ObjectGraph createScopedGraph(Object[] modules) {

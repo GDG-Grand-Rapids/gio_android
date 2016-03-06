@@ -35,7 +35,9 @@ public class ConferenceDetailModule {
 
     @Provides
     @Singleton
-    public IConferenceDetailActivityPresenter provideConferenceListActivityPresenter(ConferenceController controller, IConferenceDetailActivity view) {
+    public IConferenceDetailActivityPresenter provideConferenceListActivityPresenter(ConferenceController controller,
+                                                                                     IConferenceDetailActivity view)
+    {
         return new ConferenceDetailActivityPresenter(controller, view);
     }
 }
