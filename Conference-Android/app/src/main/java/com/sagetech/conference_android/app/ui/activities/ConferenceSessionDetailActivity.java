@@ -5,11 +5,14 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
+import com.sagetech.conference_android.app.ui.Views.FavoriteFilterView;
 import com.sagetech.conference_android.app.ui.adapters.SessionPresenterAdapter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetailActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetailPresenter;
@@ -31,7 +34,7 @@ import timber.log.Timber;
  * This is a class for displaying the conference session detail.
  */
 public class ConferenceSessionDetailActivity extends InjectableActionBarActivity implements
-        IConferenceSessionDetailActivity
+        IConferenceSessionDetailActivity, FavoriteFilterView.FavoritesFilterViewListener
 {
 
     @Inject
@@ -55,6 +58,8 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Bind(R.id.presenterView)
     RecyclerView mPresenterView;
 
+    private FavoriteFilterView favoriteMenuOption;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -73,6 +78,9 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
         Long eventId = getIntent().getLongExtra("id", 0);
         presenter.initialize(eventId);
+
+        favoriteMenuOption = new FavoriteFilterView( this, null );
+        favoriteMenuOption.setListener( this );
     }
 
 
@@ -107,6 +115,21 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate( R.menu.conference_details, menu );
+
+        //change the view for the favorite action to incorporate the desired actions on prsss
+        MenuItem item = menu.findItem(R.id.action_favorite);
+        item.setActionView( favoriteMenuOption );
+        favoriteMenuOption.showFilterEnabled( true );
+
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch (item.getItemId())
@@ -121,12 +144,18 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 NavUtils.navigateUpTo(this, intent);
 
-
-
                 return true;
+
+            case R.id.action_favorite:
+
         }
         return super.onOptionsItemSelected(item);
     }
 
 
+    @Override
+    public void enabledFilter(boolean enabled)
+    {
+        Timber.d( "Filter enabled = %s", enabled);
+    }
 }
