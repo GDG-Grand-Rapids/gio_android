@@ -10,4 +10,6 @@ public class Config
 
     public static final long CONFERENCE_ID = 1;
 
+    public static final String CONFERENCE_SHARED_PREFERENCES_NAME = "com.sagetech.conference.shared.prefs";
+
 }
