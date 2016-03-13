@@ -18,6 +18,7 @@ import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetail
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetailPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionDetailViewModel;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionType;
+import com.sagetech.conference_android.app.util.ConferencePreferences;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionDetailModule;
 import com.squareup.picasso.Picasso;
 
@@ -39,6 +40,9 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
     @Inject
     IConferenceSessionDetailPresenter presenter;
+
+    @Inject
+    ConferencePreferences preferences;
 
     @Bind(R.id.txtTitle)
     TextView title;
@@ -80,7 +84,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
         presenter.initialize(eventId);
 
         favoriteMenuOption = new FavoriteFilterView( this, null );
-        favoriteMenuOption.setListener( this );
+        favoriteMenuOption.setListener(this);
     }
 
 
@@ -98,6 +102,9 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
         Picasso.with( this ).load( eventDetailViewModel.getType().getImage() ).into(sessionType);
 
         mPresenterView.setAdapter(new SessionPresenterAdapter(eventDetailViewModel.getPresenters()));
+
+        favoriteMenuOption.showFilterEnabled( preferences.isSessionFavorite( eventDetailViewModel.getSessionID() ) );
+
     }
 
     @Override
@@ -109,7 +116,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Override
     public void onBackPressed()
     {
-        setResult( RESULT_OK );
+        setResult(RESULT_OK);
 
         super.onBackPressed();
     }
@@ -124,7 +131,6 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
         //change the view for the favorite action to incorporate the desired actions on prsss
         MenuItem item = menu.findItem(R.id.action_favorite);
         item.setActionView( favoriteMenuOption );
-        favoriteMenuOption.showFilterEnabled( true );
 
         return true;
     }
