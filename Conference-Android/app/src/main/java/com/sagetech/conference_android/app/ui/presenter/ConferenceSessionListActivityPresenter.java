@@ -4,6 +4,7 @@ import com.sagetech.conference_android.app.api.ConferenceController;
 import com.sagetech.conference_android.app.model.ConferenceSessionData;
 import com.sagetech.conference_android.app.model.RoomData;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
+import com.sagetech.conference_android.app.util.ConferencePreferences;
 
 import java.util.List;
 import java.util.Map;
@@ -27,13 +28,18 @@ public class ConferenceSessionListActivityPresenter implements IConferenceSessio
     private ConferenceController conferenceController;
     private Subscription subscription;
 
+    private ConferencePreferences preferences;
+
+
     public ConferenceSessionListActivityPresenter(IConferenceSessionActivity conferenceSessionListActivity, ConferenceController conferenceController) {
         this.conferenceSessionListActivity = conferenceSessionListActivity;
         this.conferenceController = conferenceController;
     }
 
-    public void initialize( long conferenceId )
+    public void initialize( long conferenceId, ConferencePreferences preferences )
     {
+        this.preferences = preferences;
+
         Observable<List<ConferenceSessionViewModel>> conferenceDataObservable =
                 createConferenceSessionViewModelObservable(conferenceId);
 
@@ -103,7 +109,15 @@ public class ConferenceSessionListActivityPresenter implements IConferenceSessio
         return Observable.zip(conferenceSessionObservable, roomDataObservable, new Func2<List<ConferenceSessionData>, Map<Long, RoomData>, List<ConferenceSessionViewModel>>() {
             @Override
             public List<ConferenceSessionViewModel> call(List<ConferenceSessionData> conferenceSessionDatas, Map<Long, RoomData> roomDatas) {
-                return new ConferenceSessionViewBuilder().toConferenceSessionViewModel(conferenceSessionDatas, roomDatas);
+                List<ConferenceSessionViewModel> sessions = ConferenceSessionViewBuilder.toConferenceSessionViewModel( conferenceSessionDatas, roomDatas);
+
+
+                for( ConferenceSessionViewModel session : sessions )
+                {
+                    session.isFavorite = preferences.isSessionFavorite( session.getId() );
+                }
+
+                return sessions;
             }
         });
     }

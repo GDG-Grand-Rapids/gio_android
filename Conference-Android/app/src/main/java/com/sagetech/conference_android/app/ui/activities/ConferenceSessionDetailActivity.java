@@ -63,6 +63,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     RecyclerView mPresenterView;
 
     private FavoriteFilterView favoriteMenuOption;
+    private long sessionID;
 
 
     @Override
@@ -103,7 +104,9 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
         mPresenterView.setAdapter(new SessionPresenterAdapter(eventDetailViewModel.getPresenters()));
 
-        favoriteMenuOption.showFilterEnabled( preferences.isSessionFavorite( eventDetailViewModel.getSessionID() ) );
+        //determine if the session is a favorite
+        sessionID = eventDetailViewModel.getSessionID();
+        favoriteMenuOption.showFilterEnabled( preferences.isSessionFavorite( sessionID ) );
 
     }
 
@@ -130,7 +133,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
         //change the view for the favorite action to incorporate the desired actions on prsss
         MenuItem item = menu.findItem(R.id.action_favorite);
-        item.setActionView( favoriteMenuOption );
+        item.setActionView(favoriteMenuOption);
 
         return true;
     }
@@ -162,6 +165,13 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Override
     public void enabledFilter(boolean enabled)
     {
-        Timber.d( "Filter enabled = %s", enabled);
+        if( enabled )
+        {
+            preferences.setSessionFavorite( sessionID );
+        }
+        else
+        {
+            preferences.clearSessionFavorite( sessionID );
+        }
     }
 }

@@ -18,7 +18,8 @@ import java.util.TreeSet;
  * Created by carlushenry on 3/15/15.
  */
 public class ConferenceSessionViewBuilder {
-    public static List<ConferenceSessionViewModel> toConferenceSessionViewModel(List<ConferenceSessionData> conferenceSessionDatas, Map<Long, RoomData> roomDatas) {
+    public static List<ConferenceSessionViewModel> toConferenceSessionViewModel(List<ConferenceSessionData> conferenceSessionDatas, Map<Long, RoomData> roomDatas)
+    {
 
         Map<Date, List<ConferenceSessionData>> dateMap = mapByDate(conferenceSessionDatas);
         List<ConferenceSessionViewModel> confSessionViewModels = new ArrayList<>();

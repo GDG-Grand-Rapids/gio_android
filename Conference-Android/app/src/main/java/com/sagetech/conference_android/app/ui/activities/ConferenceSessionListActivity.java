@@ -115,7 +115,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         if( refreshData )
         {
-            presenter.initialize(conferenceID);
+            presenter.initialize( conferenceID, conferencePreferences );
         }
 
         //mark data as needing refresh in case the app goes in the background
@@ -128,7 +128,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         super.onRestoreInstanceState(savedInstanceState);
 
         //if the activity was ever killed make sure we refresh the data on start
-        presenter.initialize(conferenceID);
+        presenter.initialize( conferenceID, conferencePreferences );
 
     }
 
