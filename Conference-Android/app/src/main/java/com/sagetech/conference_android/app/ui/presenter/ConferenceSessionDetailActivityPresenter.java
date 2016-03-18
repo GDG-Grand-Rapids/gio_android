@@ -58,7 +58,8 @@ public class ConferenceSessionDetailActivityPresenter implements IConferenceSess
 
     }
 
-    private Observable<ConferenceSessionDetailViewModel> createConferenceSessionDetailViewObservable(Long eventId) {
+    private Observable<ConferenceSessionDetailViewModel> createConferenceSessionDetailViewObservable(Long eventId)
+    {
         // A - we only want to call this data one time...therefore we are caching
         // FIXME this should use eventId, but we have to wait until we are being passed valid values.
         final Observable<ConferenceSessionData> conferenceSessionObservable =

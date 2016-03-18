@@ -16,6 +16,7 @@ import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionActivi
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionListPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
 import com.sagetech.conference_android.app.util.ConferenceIntents;
+import com.sagetech.conference_android.app.util.ConferencePreferences;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionListModule;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -33,12 +34,15 @@ import timber.log.Timber;
  */
 public class ConferenceSessionListActivity extends InjectableActionBarActivity
         implements IConferenceSessionActivity,
-        ConferenceSessionListAdapter.ConferenceSessionListOnClickListener,
+        ConferenceSessionListAdapter.ConferenceSessionListListener,
         FavoriteFilterView.FavoritesFilterViewListener
 {
 
     @Inject
     IConferenceSessionListPresenter presenter;
+
+    @Inject
+    ConferencePreferences conferencePreferences;
 
     @Bind(R.id.confSessionView)
     RecyclerView mRecyclerView;
@@ -213,7 +217,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
 
     //
-    // ConferenceSessionListAdapter.ConferenceSessionListOnClickListener implementation
+    // ConferenceSessionListAdapter.ConferenceSessionListListener implementation
     //
     @Override
     public void onViewConferenceDetails( Long sessionId )
@@ -226,6 +230,17 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         startActivityForResult(eventDetailIntent, SESSION_DETAIL_REQUEST_CODE );
     }
 
+    @Override
+    public void onFavoriteSet(Long id)
+    {
+        conferencePreferences.setSessionFavorite( id );
+    }
+
+    @Override
+    public void onFavoriteCleared(Long id)
+    {
+        conferencePreferences.clearSessionFavorite( id );
+    }
 
     //
     // FavoriteFilterView.FavoritesFilterViewListener implementation
