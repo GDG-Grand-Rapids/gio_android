@@ -12,12 +12,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
-import com.sagetech.conference_android.app.ui.Views.FavoriteFilterView;
+import com.sagetech.conference_android.app.ui.Views.StarView;
 import com.sagetech.conference_android.app.ui.adapters.SessionPresenterAdapter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetailActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetailPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionDetailViewModel;
-import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionType;
 import com.sagetech.conference_android.app.util.ConferencePreferences;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionDetailModule;
 import com.squareup.picasso.Picasso;
@@ -29,13 +28,12 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import timber.log.Timber;
 
 /**
  * This is a class for displaying the conference session detail.
  */
 public class ConferenceSessionDetailActivity extends InjectableActionBarActivity implements
-        IConferenceSessionDetailActivity, FavoriteFilterView.FavoritesFilterViewListener
+        IConferenceSessionDetailActivity, StarView.StarViewListener
 {
 
     @Inject
@@ -62,7 +60,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Bind(R.id.presenterView)
     RecyclerView mPresenterView;
 
-    private FavoriteFilterView favoriteMenuOption;
+    private StarView favoriteMenuOption;
     private long sessionID;
 
 
@@ -84,7 +82,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
         Long eventId = getIntent().getLongExtra("id", 0);
         presenter.initialize(eventId);
 
-        favoriteMenuOption = new FavoriteFilterView( this, null );
+        favoriteMenuOption = new StarView( this, null );
         favoriteMenuOption.setListener(this);
     }
 
@@ -106,7 +104,7 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
         //determine if the session is a favorite
         sessionID = eventDetailViewModel.getSessionID();
-        favoriteMenuOption.showFilterEnabled( preferences.isSessionFavorite( sessionID ) );
+        favoriteMenuOption.setState(preferences.isSessionFavorite(sessionID));
 
     }
 
@@ -163,9 +161,9 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
 
     @Override
-    public void enabledFilter(boolean enabled)
+    public void starSelected( boolean filled )
     {
-        if( enabled )
+        if( filled )
         {
             preferences.setSessionFavorite( sessionID );
         }

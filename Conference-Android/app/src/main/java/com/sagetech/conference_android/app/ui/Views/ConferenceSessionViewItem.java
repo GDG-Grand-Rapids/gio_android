@@ -18,7 +18,7 @@ import butterknife.OnClick;
 /**
  * Created by willmetz on 1/23/16.
  */
-public class ConferenceSessionViewItem extends RelativeLayout implements View.OnClickListener
+public class ConferenceSessionViewItem extends RelativeLayout implements View.OnClickListener, StarView.StarViewListener
 {
 
     @Bind( R.id.room )
@@ -34,10 +34,9 @@ public class ConferenceSessionViewItem extends RelativeLayout implements View.On
     ImageView icon;
 
     @Bind( R.id.favorite_icon )
-    ImageView favoriteIcon;
+    StarView favoriteIcon;
 
     private OnConferenceSessionClickListener listener;
-
 
     public interface OnConferenceSessionClickListener
     {
@@ -83,14 +82,7 @@ public class ConferenceSessionViewItem extends RelativeLayout implements View.On
 
     public void setFavorite( boolean isFavorite )
     {
-        if( isFavorite )
-        {
-            Picasso.with( getContext() ).load( R.drawable.star_icon_filled ).into(favoriteIcon);
-        }
-        else
-        {
-            Picasso.with( getContext() ).load( R.drawable.star_icon_unfilled ).into( favoriteIcon );
-        }
+        favoriteIcon.setState( isFavorite );
     }
 
     private void init()
@@ -98,7 +90,9 @@ public class ConferenceSessionViewItem extends RelativeLayout implements View.On
         inflate(getContext(), R.layout.conference_session_list_item, this);
         ButterKnife.bind(this);
 
-        setOnClickListener( this );
+        setOnClickListener(this);
+
+        favoriteIcon.setListener( this );
     }
 
     @OnClick( R.id.favorite_icon )
@@ -123,6 +117,15 @@ public class ConferenceSessionViewItem extends RelativeLayout implements View.On
         if( listener != null )
         {
             listener.onSessionClicked();
+        }
+    }
+
+    @Override
+    public void starSelected(boolean enabled)
+    {
+        if( listener != null )
+        {
+            listener.onFavoriteItemSelected();
         }
     }
 }
