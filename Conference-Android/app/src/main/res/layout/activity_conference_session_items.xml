@@ -20,7 +20,7 @@
             tools:text="Google I/O"
             android:textColor="@color/white" />
 
-        <com.sagetech.conference_android.app.ui.Views.FavoriteFilterView
+        <com.sagetech.conference_android.app.ui.Views.StarView
             android:id="@+id/favorites_filter"
             android:layout_width="35dp"
             android:layout_height="35dp"

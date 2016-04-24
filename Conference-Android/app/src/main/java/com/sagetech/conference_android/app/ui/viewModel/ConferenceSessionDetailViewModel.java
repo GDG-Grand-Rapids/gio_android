@@ -62,6 +62,11 @@ public class ConferenceSessionDetailViewModel {
         return roomData.getShortDesc();
     }
 
+    public Long getSessionID()
+    {
+        return sessionData.getId();
+    }
+
     public Date getStartDttm() {
         return sessionData.getStartDttm();
     }

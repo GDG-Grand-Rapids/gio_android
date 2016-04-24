@@ -24,7 +24,7 @@
         android:layout_toRightOf="@+id/iconType" >
 
 
-        <ImageView
+        <com.sagetech.conference_android.app.ui.Views.StarView
             android:id="@+id/favorite_icon"
             android:layout_width="35dp"
             android:layout_height="35dp"

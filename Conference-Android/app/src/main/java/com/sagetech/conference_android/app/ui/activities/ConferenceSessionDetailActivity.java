@@ -5,16 +5,19 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
+import com.sagetech.conference_android.app.ui.Views.StarView;
 import com.sagetech.conference_android.app.ui.adapters.SessionPresenterAdapter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetailActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionDetailPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionDetailViewModel;
-import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionType;
+import com.sagetech.conference_android.app.util.ConferencePreferences;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionDetailModule;
 import com.squareup.picasso.Picasso;
 
@@ -25,17 +28,19 @@ import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
-import timber.log.Timber;
 
 /**
  * This is a class for displaying the conference session detail.
  */
 public class ConferenceSessionDetailActivity extends InjectableActionBarActivity implements
-        IConferenceSessionDetailActivity
+        IConferenceSessionDetailActivity, StarView.StarViewListener
 {
 
     @Inject
     IConferenceSessionDetailPresenter presenter;
+
+    @Inject
+    ConferencePreferences preferences;
 
     @Bind(R.id.txtTitle)
     TextView title;
@@ -55,6 +60,9 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Bind(R.id.presenterView)
     RecyclerView mPresenterView;
 
+    private StarView favoriteMenuOption;
+    private long sessionID;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -73,6 +81,9 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
 
         Long eventId = getIntent().getLongExtra("id", 0);
         presenter.initialize(eventId);
+
+        favoriteMenuOption = new StarView( this, null );
+        favoriteMenuOption.setListener(this);
     }
 
 
@@ -90,6 +101,11 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
         Picasso.with( this ).load( eventDetailViewModel.getType().getImage() ).into(sessionType);
 
         mPresenterView.setAdapter(new SessionPresenterAdapter(eventDetailViewModel.getPresenters()));
+
+        //determine if the session is a favorite
+        sessionID = eventDetailViewModel.getSessionID();
+        favoriteMenuOption.setState(preferences.isSessionFavorite(sessionID));
+
     }
 
     @Override
@@ -101,9 +117,23 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
     @Override
     public void onBackPressed()
     {
-        setResult( RESULT_OK );
+        setResult(RESULT_OK);
 
         super.onBackPressed();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+
+        inflater.inflate( R.menu.conference_details, menu );
+
+        //change the view for the favorite action to incorporate the desired actions on prsss
+        MenuItem item = menu.findItem(R.id.action_favorite);
+        item.setActionView(favoriteMenuOption);
+
+        return true;
     }
 
     @Override
@@ -121,12 +151,25 @@ public class ConferenceSessionDetailActivity extends InjectableActionBarActivity
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                 NavUtils.navigateUpTo(this, intent);
 
-
-
                 return true;
+
+            case R.id.action_favorite:
+
         }
         return super.onOptionsItemSelected(item);
     }
 
 
+    @Override
+    public void starSelected( boolean filled )
+    {
+        if( filled )
+        {
+            preferences.setSessionFavorite( sessionID );
+        }
+        else
+        {
+            preferences.clearSessionFavorite( sessionID );
+        }
+    }
 }

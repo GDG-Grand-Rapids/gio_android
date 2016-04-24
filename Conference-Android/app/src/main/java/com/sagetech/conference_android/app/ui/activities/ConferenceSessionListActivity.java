@@ -9,13 +9,14 @@ import android.view.MenuItem;
 import android.widget.TextView;
 
 import com.sagetech.conference_android.app.R;
-import com.sagetech.conference_android.app.ui.Views.FavoriteFilterView;
+import com.sagetech.conference_android.app.ui.Views.StarView;
 import com.sagetech.conference_android.app.ui.Views.SimpleDividerLineDecorator;
 import com.sagetech.conference_android.app.ui.adapters.ConferenceSessionListAdapter;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionActivity;
 import com.sagetech.conference_android.app.ui.presenter.IConferenceSessionListPresenter;
 import com.sagetech.conference_android.app.ui.viewModel.ConferenceSessionViewModel;
 import com.sagetech.conference_android.app.util.ConferenceIntents;
+import com.sagetech.conference_android.app.util.ConferencePreferences;
 import com.sagetech.conference_android.app.util.module.ConferenceSessionListModule;
 import com.timehop.stickyheadersrecyclerview.StickyRecyclerHeadersDecoration;
 
@@ -33,12 +34,15 @@ import timber.log.Timber;
  */
 public class ConferenceSessionListActivity extends InjectableActionBarActivity
         implements IConferenceSessionActivity,
-        ConferenceSessionListAdapter.ConferenceSessionListOnClickListener,
-        FavoriteFilterView.FavoritesFilterViewListener
+        ConferenceSessionListAdapter.ConferenceSessionListListener,
+        StarView.StarViewListener
 {
 
     @Inject
     IConferenceSessionListPresenter presenter;
+
+    @Inject
+    ConferencePreferences conferencePreferences;
 
     @Bind(R.id.confSessionView)
     RecyclerView mRecyclerView;
@@ -47,7 +51,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     TextView txtConferenceName;
 
     @Bind(R.id.favorites_filter)
-    FavoriteFilterView favoriteFilterView;
+    StarView starView;
 
     private final String FILTER_APPLIED_KEY = "com.sagetech.conference_android.filterApplied";
     private final int SESSION_DETAIL_REQUEST_CODE = 1;
@@ -88,17 +92,13 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
             txtConferenceName.setText(savedInstanceState.getString(ConferenceIntents.CONFERENCE_NAME_KEY));
             conferenceID = savedInstanceState.getLong(ConferenceIntents.CONFERENCE_ID_KEY, 0);
 
-            //TODO - remove when saving data is implemented
-            filterApplied = false;
-
-            //TODO - implement when saving this data is implemented
-            //filterApplied = savedInstanceState.getBoolean(FILTER_APPLIED_KEY);
-            //setFilterAppliedIcon(filterApplied);
+            filterApplied = savedInstanceState.getBoolean(FILTER_APPLIED_KEY);
+            starView.setState( filterApplied );
         }
 
         //make sure the filter view is hidden until data is obtained
-        favoriteFilterView.hide();
-        favoriteFilterView.setListener(this);
+        starView.hide();
+        starView.setListener(this);
 
         //assume we are going to refresh the data
         refreshData = true;
@@ -111,7 +111,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
         if( refreshData )
         {
-            presenter.initialize(conferenceID);
+            presenter.initialize( conferenceID, conferencePreferences );
         }
 
         //mark data as needing refresh in case the app goes in the background
@@ -124,7 +124,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         super.onRestoreInstanceState(savedInstanceState);
 
         //if the activity was ever killed make sure we refresh the data on start
-        presenter.initialize(conferenceID);
+        presenter.initialize( conferenceID, conferencePreferences );
 
     }
 
@@ -160,7 +160,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
     @Override
     public void populateConferenceSessions(List<ConferenceSessionViewModel> conferenceSessions)
     {
-        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, favoriteFilterView.filterEnabled() );
+        mAdapter = new ConferenceSessionListAdapter(conferenceSessions, this, starView.filled() );
         mRecyclerView.setAdapter(mAdapter);
 
         //ensure the old decors are removed (if there are any)
@@ -183,7 +183,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         presenter.onUnsubscribe();
 
         //now that we have data make sure the filter can be applied/removed
-        favoriteFilterView.show();
+        starView.show();
 
     }
 
@@ -213,7 +213,7 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
 
 
     //
-    // ConferenceSessionListAdapter.ConferenceSessionListOnClickListener implementation
+    // ConferenceSessionListAdapter.ConferenceSessionListListener implementation
     //
     @Override
     public void onViewConferenceDetails( Long sessionId )
@@ -226,18 +226,31 @@ public class ConferenceSessionListActivity extends InjectableActionBarActivity
         startActivityForResult(eventDetailIntent, SESSION_DETAIL_REQUEST_CODE );
     }
 
+    @Override
+    public void onFavoriteSet(Long id)
+    {
+        conferencePreferences.setSessionFavorite( id );
+    }
+
+    @Override
+    public void onFavoriteCleared(Long id)
+    {
+        conferencePreferences.clearSessionFavorite( id );
+    }
 
     //
-    // FavoriteFilterView.FavoritesFilterViewListener implementation
+    // FavoriteFilterView.StarViewListener implementation
     //
 
 
     @Override
-    public void enabledFilter(boolean enabled)
+    public void starSelected( boolean enabled )
     {
         if (mAdapter != null)
         {
-            mAdapter.applyFavoritesFilter(enabled);
+            mAdapter.applyFavoritesFilter( enabled );
         }
+
+        filterApplied = enabled;
     }
 }
